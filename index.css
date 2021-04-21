@@ -4,7 +4,15 @@ body{
 }
 
 .header{
-
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 27%;
+    background: lightblue;
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+    font-size: 45px;
+    color: white;
 }
 
 .body-container{
@@ -12,7 +20,15 @@ body{
 }
 
 .footer{
-
+    display: flex;
+    height: 13%;
+    justify-content: center;
+    background: cornflowerblue;
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    color: white;
+    align-items: center;
 }
 
 
