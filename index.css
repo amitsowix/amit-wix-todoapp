@@ -20,10 +20,6 @@ body{
     padding: 30px 70px;
 }
 
-.actions-bar{
-
-}
-
 .new-item-container{
     display: flex;
     align-items: flex-end;
