@@ -1,6 +1,7 @@
 
 body{
     margin: 0px;
+    font-family: sans-serif;
 }
 
 .header{
@@ -16,12 +17,51 @@ body{
 }
 
 .body-container{
+    padding: 30px 70px;
+}
 
+.actions-bar{
+
+}
+
+.new-item-container{
+    display: flex;
+    align-items: flex-end;
+}
+
+.new-item{
+    background: cadetblue;
+    font-size: 20px;
+    width: auto;
+    display: inline-block;
+    padding: 16px;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.input{
+    border: none;
+    border-bottom: 1px solid gray;
+    margin-left: 5px;
+    outline: none;
+    height: 31px;
+}
+
+.submit{
+    border: 1px solid gray;
+    padding: 10px;
+    border-radius: 5px;
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 10px;
 }
 
 .footer{
     display: flex;
-    height: 13%;
+    height: 10%;
     justify-content: center;
     background: cornflowerblue;
     position: absolute;
@@ -32,3 +72,47 @@ body{
 }
 
 
+.todo-list{
+    padding: 30px 115px;
+    font-size: 30px;
+    height: 50%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    margin: 0px;
+}
+
+.list-item{
+    margin-bottom: 30px;
+    display: flex;
+    width: fit-content;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.todo-text{
+    margin-left: 10px;
+}
+
+.add-icon{
+    height: 30px;
+    filter: brightness(0) invert(1);
+    margin-right: 8px;
+}
+
+.edit-btn{
+    height: 25px;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+.delete-btn{
+    height: 30px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.actions-container{
+    display: flex;
+    align-items: center;
+}
