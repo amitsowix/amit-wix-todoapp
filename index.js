@@ -1,8 +1,8 @@
 
 //Get elements from DOM
-let listContainer = document.getElementsByClassName("todo-list")[0];
-let addItemButton = document.getElementsByClassName("new-item")[0];
-let addNewItemContainer = document.getElementsByClassName("new-item-container")[0];
+const listContainer = document.querySelector("[data-hook='list-container']");
+const addItemButton = document.querySelector("[data-hook='new-item-button']");
+const addNewItemContainer = document.querySelector("[data-hook='new-item-container']");
 
 //"setState"
 let isEditMode = false;
@@ -10,98 +10,136 @@ let isAddNewItemInputShowing = false;
 
 
 //Functions and Event Listeners
-addItemButton.addEventListener('click', function() {
-    if (isAddNewItemInputShowing){
-        removeInput();
-    }
-    else{
-        showInputPrompt();
-    }
+addItemButton.addEventListener('click', () => {
+    isAddNewItemInputShowing ? removeInput() : showInputPrompt();
 })
 
-let createInput = function(){
-    let input = document.createElement('input');
-    let submitButton = document.createElement('div');
+const createInputPrompt = (isMainInput) => {
+    const input = document.createElement('input');
+    const submitButton = document.createElement('div');
     submitButton.className = "submit";
     submitButton.innerText = "GO!";
     input.className = "input";
-    return [input, submitButton];
+    if (isMainInput){
+        addNewItemContainer.appendChild(input);
+        addNewItemContainer.appendChild(submitButton);
+        submitButton.addEventListener('click', () => {
+            sumbitNewItemInput(input.value);
+        })
+        input.addEventListener('keyup', (event) => {
+            if (event.key === "Enter"){
+                sumbitNewItemInput(input.value);
+            }
+        })
+        input.focus();
+    }
+    else{
+        return {input, submitButton};
+    }
 }
 
-let showInputPrompt = function(){
-    let [input, submitButton] = createInput();
-    addNewItemContainer.appendChild(input);
-    addNewItemContainer.appendChild(submitButton);
-    submitButton.addEventListener('click', function(){
-        if (input.value !== ""){
-            addNewItem(input.value);
-            removeInput();
-        }
-    })
+const sumbitNewItemInput = (submitValue) => {
+    if (submitValue !== ""){
+        addNewItem(submitValue);
+        removeInput();
+    }
+}
+
+const showInputPrompt = () => {
+    createInputPrompt(true);
     isAddNewItemInputShowing = true;
 }
 
-let createNewItemElements = function(){
-    let newTodoItem = document.createElement('li');
-    let todoText = document.createElement('div');
-    let actionsContainer = document.createElement('div');
-    let editTodo = document.createElement('img');
-    let deleteTodo = document.createElement('img');
-    let checkbox = document.createElement('input');
-    return [newTodoItem, todoText, actionsContainer, editTodo, deleteTodo, checkbox];
+const setTodoItem = () => {
+    const newTodoItem = document.createElement('li');
+    newTodoItem.className = "list-item";
+    return newTodoItem;
 }
 
-let addNewItem = function(name){
-    //Create Elements
-    let [newTodoItem, todoText, actionsContainer, editTodo, deleteTodo, checkbox] = createNewItemElements();
-    todoText.innerText = name; 
-    checkbox.type = 'checkbox';
-    //Add Classes
-    newTodoItem.className = "list-item";
-    todoText.className = "todo-text";
-    actionsContainer.className = 'actions-container';
-    editTodo.className = 'edit-btn';
-    deleteTodo.className = 'delete-btn';
-    checkbox.className = 'checkbox';
-    //Set Icons
-    editTodo.src = 'assets/edit.png';
-    deleteTodo.src = 'assets/delete.png';
-    //Set Event listeners
-    editTodo.addEventListener('click', function(){
+const setTodoItemText = (todoText) => {
+    const todoTextElement = document.createElement('div');
+    todoTextElement.innerText = todoText; 
+    todoTextElement.className = "todo-text";
+    return todoTextElement;
+}
+
+const submitEditItemInput = (input, todoTextElement, actionsContainer, submitButton) => {
+    if (input.value !== ""){
+        todoTextElement.innerText = input.value;
+        actionsContainer.removeChild(input);
+        actionsContainer.removeChild(submitButton);
+        isEditMode = false;
+    }
+}
+
+const setActions = (actionsContainer, editTodo, deleteTodo, newTodoItem, todoTextElement) => {
+    editTodo.addEventListener('click', () => {
         if (!isEditMode){
             isEditMode = true;
-            let [input, submitButton] = createInput();
+            const {input, submitButton} = createInputPrompt();
+            input.value = todoTextElement.innerText;
             actionsContainer.insertBefore(input, actionsContainer.children[1]);
             actionsContainer.insertBefore(submitButton, actionsContainer.children[2]);
-            submitButton.addEventListener('click', function(){
-                if (input.value !== ""){
-                    todoText.innerText = input.value;
-                    actionsContainer.removeChild(input);
-                    actionsContainer.removeChild(submitButton);
-                    isEditMode = false;
+            input.focus();
+            submitButton.addEventListener('click', () => {
+                submitEditItemInput(input, todoTextElement, actionsContainer, submitButton);
+            })
+            input.addEventListener('keyup', (event)=>{
+                if (event.key === "Enter"){
+                    submitEditItemInput(input, todoTextElement, actionsContainer, submitButton);
                 }
             })
         }
     })
-    deleteTodo.addEventListener('click', function(){
+    deleteTodo.addEventListener('click', () => {
         deleteItem(newTodoItem);
     })
-    //Append all
-    newTodoItem.appendChild(checkbox);
-    newTodoItem.appendChild(todoText);
+}
+
+const setActionsContainer = (todoTextElement, newTodoItem) => {
+    const actionsContainer = document.createElement('div');
+    const editTodo = document.createElement('img');
+    const deleteTodo = document.createElement('img');
+    actionsContainer.className = 'actions-container';
+    editTodo.className = 'edit-btn';
+    deleteTodo.className = 'delete-btn';
+    editTodo.src = 'assets/edit.png';
+    deleteTodo.src = 'assets/delete.png';
     actionsContainer.appendChild(editTodo);
-    actionsContainer.appendChild(deleteTodo);    
+    actionsContainer.appendChild(deleteTodo);  
+    setActions(actionsContainer, editTodo, deleteTodo, newTodoItem, todoTextElement);
+    return actionsContainer;
+}   
+
+const setCheckboxElement = (todoTextElement) => {
+    const checkboxElement = document.createElement('input');
+    checkboxElement.type = 'checkbox';
+    checkboxElement.className = 'checkbox';
+    checkboxElement.addEventListener('click', () => {
+        todoTextElement.className =  checkboxElement.checked ? "todo-text-checked" : "todo-text";
+    });
+    return checkboxElement;
+}
+
+const addNewItem = (todoText) => {
+    //Create Elements
+    const newTodoItem = setTodoItem();
+    const todoTextElement = setTodoItemText(todoText);
+    const actionsContainer = setActionsContainer(todoTextElement, newTodoItem);
+    const checkboxElement = setCheckboxElement(todoTextElement);
+    newTodoItem.appendChild(checkboxElement);
+    newTodoItem.appendChild(todoTextElement);  
     newTodoItem.appendChild(actionsContainer);
     listContainer.appendChild(newTodoItem);
 }
 
-let removeInput = function(){
+const removeInput = () => {
     addNewItemContainer.removeChild(addNewItemContainer.children[1]);
     addNewItemContainer.removeChild(addNewItemContainer.children[1]);
     isAddNewItemInputShowing = false;
 }
 
-let deleteItem = function(itemToDelete) {
+const deleteItem = (itemToDelete) => {
     listContainer.removeChild(itemToDelete);
     isEditMode = false;
 }
