@@ -126,7 +126,7 @@ const addNewItem = (todoText) => {
     newTodoItem.appendChild(checkboxElement);
     newTodoItem.appendChild(todoTextElement);  
     newTodoItem.appendChild(actionsContainer);
-    listContainer.appendChild(newTodoItem);
+    listContainer.insertBefore(newTodoItem, listContainer.children[0]);
 }
 
 const hideInputPrompt = () => {
