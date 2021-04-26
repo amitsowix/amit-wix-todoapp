@@ -9,7 +9,6 @@ const addItemButton = getElementByData("new-item-button");
 const addNewItemContainer = getElementByData('new-item-container');
 
 //"setState"
-let isEditMode = false;
 let isAddNewItemInputShowing = false;
 
 
@@ -25,7 +24,7 @@ const createInputPrompt = () => {
     return {input, submitButton};
 }
 
-const sumbitNewItemInput = (input) => {
+const submitNewItemInput = (input) => {
     if (input.value !== ""){
         addNewItem(input.value);
         input.value = "";
@@ -34,13 +33,13 @@ const sumbitNewItemInput = (input) => {
 }
 
 const createAddNewItemPrompt = () => {
-    let {input, submitButton} = createInputPrompt();
+    const {input, submitButton} = createInputPrompt();
     addNewItemContainer.appendChild(input);
     addNewItemContainer.appendChild(submitButton);
-    submitButton.addEventListener('click', () => sumbitNewItemInput(input));
+    submitButton.addEventListener('click', () => submitNewItemInput(input));
     input.addEventListener('keyup', (event) => {
         if (event.key === "Enter"){
-            sumbitNewItemInput(input);
+            submitNewItemInput(input);
         }
     })
     input.focus();
@@ -51,13 +50,14 @@ const showInputPrompt = () => {
     isAddNewItemInputShowing = true;
 }
 
-const setTodoItem = () => {
+const createTodoItemElement = () => {
     const newTodoItem = document.createElement('li');
     newTodoItem.className = "list-item";
+    newTodoItem.isInEditMode = false;
     return newTodoItem;
 }
 
-const setTodoItemText = (todoText) => {
+const createTodoItemTextElement = (todoText) => {
     const todoTextElement = document.createElement('div');
     todoTextElement.innerText = todoText; 
     todoTextElement.className = "todo-text";
@@ -69,31 +69,28 @@ const submitEditItemInput = (input, submitButton, actionElements) => {
         actionElements.todoTextElement.innerText = input.value;
         actionElements.actionsContainer.removeChild(input);
         actionElements.actionsContainer.removeChild(submitButton);
-        isEditMode = false;
+        actionElements.newTodoItem.isInEditMode = false;
     }
 }
 
-const setActions = (actionElements) => {
-    actionElements.editTodo.addEventListener('click', () => {
-        if (!isEditMode){
-            isEditMode = true;
-            const {input, submitButton} = createInputPrompt();
-            input.value = actionElements.todoTextElement.innerText;
-            actionElements.actionsContainer.insertBefore(input, actionElements.deleteTodo);
-            actionElements.actionsContainer.insertBefore(submitButton,actionElements.deleteTodo);
-            input.focus();
-            submitButton.addEventListener('click', () => submitEditItemInput(input, submitButton, actionElements));
-            input.addEventListener('keyup', (event) => {
-                if (event.key === "Enter"){
-                    submitEditItemInput(input, submitButton, actionElements);
-                }
-            })
-        }
-    })
-    actionElements.deleteTodo.addEventListener('click', () => deleteItem(actionElements.newTodoItem));
+const editItem = (actionElements) => {
+    if (!actionElements.newTodoItem.isInEditMode){
+        actionElements.newTodoItem.isInEditMode = true;
+        const {input, submitButton} = createInputPrompt();
+        input.value = actionElements.todoTextElement.innerText;
+        actionElements.actionsContainer.insertBefore(input, actionElements.deleteTodo);
+        actionElements.actionsContainer.insertBefore(submitButton,actionElements.deleteTodo);
+        input.focus();
+        submitButton.addEventListener('click', () => submitEditItemInput(input, submitButton, actionElements));
+        input.addEventListener('keyup', (event) => {
+            if (event.key === "Enter"){
+                submitEditItemInput(input, submitButton, actionElements);
+            }
+        })
+    }
 }
 
-const setActionsContainer = (todoTextElement, newTodoItem) => {
+const createActionsElements = (todoTextElement, newTodoItem) => {
     const actionsContainer = document.createElement('div');
     const editTodo = document.createElement('img');
     const deleteTodo = document.createElement('img');
@@ -104,12 +101,13 @@ const setActionsContainer = (todoTextElement, newTodoItem) => {
     deleteTodo.src = 'assets/delete.png';
     actionsContainer.appendChild(editTodo);
     actionsContainer.appendChild(deleteTodo);
-    let actionElements = {actionsContainer, editTodo, deleteTodo, newTodoItem, todoTextElement}  
-    setActions(actionElements);
+    const actionElements = {actionsContainer, editTodo, deleteTodo, newTodoItem, todoTextElement}  
+    actionElements.editTodo.addEventListener('click', () => editItem(actionElements));
+    actionElements.deleteTodo.addEventListener('click', () => deleteItem(newTodoItem));
     return actionsContainer;
 }   
 
-const setCheckboxElement = (todoTextElement) => {
+const createCheckboxElement = (todoTextElement) => {
     const checkboxElement = document.createElement('input');
     checkboxElement.type = 'checkbox';
     checkboxElement.className = 'checkbox';
@@ -119,10 +117,10 @@ const setCheckboxElement = (todoTextElement) => {
 
 const addNewItem = (todoText) => {
     //Create Elements
-    const newTodoItem = setTodoItem();
-    const todoTextElement = setTodoItemText(todoText);
-    const actionsContainer = setActionsContainer(todoTextElement, newTodoItem);
-    const checkboxElement = setCheckboxElement(todoTextElement);
+    const newTodoItem = createTodoItemElement();
+    const todoTextElement = createTodoItemTextElement(todoText);
+    const actionsContainer = createActionsElements(todoTextElement, newTodoItem);
+    const checkboxElement = createCheckboxElement(todoTextElement);
     newTodoItem.appendChild(checkboxElement);
     newTodoItem.appendChild(todoTextElement);  
     newTodoItem.appendChild(actionsContainer);
@@ -137,5 +135,4 @@ const hideInputPrompt = () => {
 
 const deleteItem = (itemToDelete) => {
     listContainer.removeChild(itemToDelete);
-    isEditMode = false;
 }
