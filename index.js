@@ -1,8 +1,12 @@
 
+
 //Get elements from DOM
-const listContainer = document.querySelector("[data-hook='list-container']");
-const addItemButton = document.querySelector("[data-hook='new-item-button']");
-const addNewItemContainer = document.querySelector("[data-hook='new-item-container']");
+
+const getElementByData = (selector) => document.querySelector(`[data-hook=${selector}]`);
+
+const listContainer = getElementByData("list-container");
+const addItemButton = getElementByData("new-item-button");
+const addNewItemContainer = getElementByData('new-item-container');
 
 //"setState"
 let isEditMode = false;
@@ -10,43 +14,40 @@ let isAddNewItemInputShowing = false;
 
 
 //Functions and Event Listeners
-addItemButton.addEventListener('click', () => {
-    isAddNewItemInputShowing ? removeInput() : showInputPrompt();
-})
+addItemButton.addEventListener('click', () => isAddNewItemInputShowing ? hideInputPrompt() : showInputPrompt());
 
-const createInputPrompt = (isMainInput) => {
+const createInputPrompt = () => {
     const input = document.createElement('input');
     const submitButton = document.createElement('div');
     submitButton.className = "submit";
     submitButton.innerText = "GO!";
     input.className = "input";
-    if (isMainInput){
-        addNewItemContainer.appendChild(input);
-        addNewItemContainer.appendChild(submitButton);
-        submitButton.addEventListener('click', () => {
-            sumbitNewItemInput(input.value);
-        })
-        input.addEventListener('keyup', (event) => {
-            if (event.key === "Enter"){
-                sumbitNewItemInput(input.value);
-            }
-        })
+    return {input, submitButton};
+}
+
+const sumbitNewItemInput = (input) => {
+    if (input.value !== ""){
+        addNewItem(input.value);
+        input.value = "";
         input.focus();
-    }
-    else{
-        return {input, submitButton};
     }
 }
 
-const sumbitNewItemInput = (submitValue) => {
-    if (submitValue !== ""){
-        addNewItem(submitValue);
-        removeInput();
-    }
+const createAddNewItemPrompt = () => {
+    let {input, submitButton} = createInputPrompt();
+    addNewItemContainer.appendChild(input);
+    addNewItemContainer.appendChild(submitButton);
+    submitButton.addEventListener('click', () => sumbitNewItemInput(input));
+    input.addEventListener('keyup', (event) => {
+        if (event.key === "Enter"){
+            sumbitNewItemInput(input);
+        }
+    })
+    input.focus();
 }
 
 const showInputPrompt = () => {
-    createInputPrompt(true);
+    createAddNewItemPrompt();
     isAddNewItemInputShowing = true;
 }
 
@@ -63,37 +64,33 @@ const setTodoItemText = (todoText) => {
     return todoTextElement;
 }
 
-const submitEditItemInput = (input, todoTextElement, actionsContainer, submitButton) => {
+const submitEditItemInput = (input, submitButton, actionElements) => {
     if (input.value !== ""){
-        todoTextElement.innerText = input.value;
-        actionsContainer.removeChild(input);
-        actionsContainer.removeChild(submitButton);
+        actionElements.todoTextElement.innerText = input.value;
+        actionElements.actionsContainer.removeChild(input);
+        actionElements.actionsContainer.removeChild(submitButton);
         isEditMode = false;
     }
 }
 
-const setActions = (actionsContainer, editTodo, deleteTodo, newTodoItem, todoTextElement) => {
-    editTodo.addEventListener('click', () => {
+const setActions = (actionElements) => {
+    actionElements.editTodo.addEventListener('click', () => {
         if (!isEditMode){
             isEditMode = true;
             const {input, submitButton} = createInputPrompt();
-            input.value = todoTextElement.innerText;
-            actionsContainer.insertBefore(input, actionsContainer.children[1]);
-            actionsContainer.insertBefore(submitButton, actionsContainer.children[2]);
+            input.value = actionElements.todoTextElement.innerText;
+            actionElements.actionsContainer.insertBefore(input, actionElements.deleteTodo);
+            actionElements.actionsContainer.insertBefore(submitButton,actionElements.deleteTodo);
             input.focus();
-            submitButton.addEventListener('click', () => {
-                submitEditItemInput(input, todoTextElement, actionsContainer, submitButton);
-            })
-            input.addEventListener('keyup', (event)=>{
+            submitButton.addEventListener('click', () => submitEditItemInput(input, submitButton, actionElements));
+            input.addEventListener('keyup', (event) => {
                 if (event.key === "Enter"){
-                    submitEditItemInput(input, todoTextElement, actionsContainer, submitButton);
+                    submitEditItemInput(input, submitButton, actionElements);
                 }
             })
         }
     })
-    deleteTodo.addEventListener('click', () => {
-        deleteItem(newTodoItem);
-    })
+    actionElements.deleteTodo.addEventListener('click', () => deleteItem(actionElements.newTodoItem));
 }
 
 const setActionsContainer = (todoTextElement, newTodoItem) => {
@@ -106,8 +103,9 @@ const setActionsContainer = (todoTextElement, newTodoItem) => {
     editTodo.src = 'assets/edit.png';
     deleteTodo.src = 'assets/delete.png';
     actionsContainer.appendChild(editTodo);
-    actionsContainer.appendChild(deleteTodo);  
-    setActions(actionsContainer, editTodo, deleteTodo, newTodoItem, todoTextElement);
+    actionsContainer.appendChild(deleteTodo);
+    let actionElements = {actionsContainer, editTodo, deleteTodo, newTodoItem, todoTextElement}  
+    setActions(actionElements);
     return actionsContainer;
 }   
 
@@ -115,9 +113,7 @@ const setCheckboxElement = (todoTextElement) => {
     const checkboxElement = document.createElement('input');
     checkboxElement.type = 'checkbox';
     checkboxElement.className = 'checkbox';
-    checkboxElement.addEventListener('click', () => {
-        todoTextElement.className =  checkboxElement.checked ? "todo-text-checked" : "todo-text";
-    });
+    checkboxElement.addEventListener('click', () => todoTextElement.className =  checkboxElement.checked ? "todo-text-checked" : "todo-text");
     return checkboxElement;
 }
 
@@ -133,7 +129,7 @@ const addNewItem = (todoText) => {
     listContainer.appendChild(newTodoItem);
 }
 
-const removeInput = () => {
+const hideInputPrompt = () => {
     addNewItemContainer.removeChild(addNewItemContainer.children[1]);
     addNewItemContainer.removeChild(addNewItemContainer.children[1]);
     isAddNewItemInputShowing = false;
