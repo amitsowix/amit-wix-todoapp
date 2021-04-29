@@ -1,7 +1,5 @@
-import _, { remove } from 'lodash';
-import {addEventListener} from "./modules/eventlisteners.js";
-import {createElement, getElementByData, removeChildren, appendChildren, insertBefore} from "./modules/dom.js";
-import { getFromLocalStorage, setInLocalStorage } from './modules/localstorage.js';
+import {createElement, getElementByData, removeChildren, appendChildren, insertBefore, addEventListener} from "./modules/dom.js";
+import {getFromLocalStorage, setInLocalStorage} from './modules/localstorage.js';
 
 const addNewItemContainerElement = getElementByData("new-item-container");
 const addNewItemButton = getElementByData("new-item-button");
