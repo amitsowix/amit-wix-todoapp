@@ -5,7 +5,6 @@ const addNewItemContainerElement = getElementByData("new-item-container");
 const addNewItemButton = getElementByData("new-item-button");
 const todoListContainerElement = getElementByData("list-container");
 
-
 let todoListItems = [];
 let ID = 0;
 let isAddNewItemInputPromptShowing = false;
@@ -122,10 +121,10 @@ const createTodoActionsContainer = (todoItemContainer, todoItemTextElement) => {
     const todoActionsContainer = createElement('div');
     todoActionsContainer.className = 'actions-container';
     const editIcon = createElement('img');
-    editIcon.src = '../src/assets/edit.png';
+    editIcon.src = './assets/edit.png';
     editIcon.className = 'icon';
     const deleteIcon = createElement('img');
-    deleteIcon.src = '../src/assets/delete.png';
+    deleteIcon.src = './assets/delete.png';
     deleteIcon.className = 'icon';
     setActionsEventListeners({todoItemContainer, deleteIcon, editIcon, todoItemTextElement, todoActionsContainer});
     appendChildren(todoActionsContainer, [editIcon, deleteIcon]);
