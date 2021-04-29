@@ -173,9 +173,10 @@ const createInputPromptElements = () => {
 
 addEventListener(addNewItemButton, 'click', onAddNewItemClick);
 
-
 const importedTodoListItems = getFromLocalStorage("todoList");
-for (const item of importedTodoListItems){
-    onAddNewItemInputSubmit(item.text, item.isChecked);
+if (importedTodoListItems){
+    for (const item of importedTodoListItems){
+        onAddNewItemInputSubmit(item.text, item.isChecked);
+    }    
 }
 
