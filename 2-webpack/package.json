@@ -10,7 +10,7 @@
     "build:prod": "webpack --mode=production",
     "watch": "webpack --watch",
     "serve": "webpack serve",
-    "start":  "webpack serve"
+    "start": "webpack serve"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +25,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "uuid": "^8.3.2"
   }
 }
