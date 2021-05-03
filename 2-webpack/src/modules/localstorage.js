@@ -6,6 +6,7 @@ export const setInLocalStorage = (key, value) => {
 }
 
 export const getFromLocalStorage = (key) => {
-    return JSON.parse(window.localStorage.getItem(key));
+    let response = window.localStorage.getItem(key);
+    return response ? JSON.parse(response) : [];
 }
 

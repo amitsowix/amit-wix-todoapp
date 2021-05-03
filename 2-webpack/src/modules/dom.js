@@ -26,6 +26,6 @@ export const insertBefore = (parentElement, newDivs, insertBefore) => {
     }
 }
 
-export const addEventListener = (element, type, callback) => {
-    element.addEventListener(type, callback);
+export const addEventListener = (element, type, callback, options) => {
+    element.addEventListener(type, callback, options);
 } 

@@ -1,12 +1,13 @@
 import {createElement, getElementByData, removeChildren, appendChildren, insertBefore, addEventListener} from "./modules/dom.js";
 import {getFromLocalStorage, setInLocalStorage} from './modules/localstorage.js';
+import { v4 as uuidv4 } from 'uuid';
+
 
 const addNewItemContainerElement = getElementByData("new-item-container");
 const addNewItemButton = getElementByData("new-item-button");
 const todoListContainerElement = getElementByData("list-container");
 
 let todoListItems = [];
-let ID = 0;
 let isAddNewItemInputPromptShowing = false;
 
 const onAddNewItemClick = () => {
@@ -14,8 +15,8 @@ const onAddNewItemClick = () => {
 }
 
 const hideNewItemInputPrompt = () => {
-    const inputPromptElement = addNewItemContainerElement.children[1];
-    const submitButton = addNewItemContainerElement.children[2];
+    const inputPromptElement = getElementByData('new-item-input');
+    const submitButton = getElementByData('new-item-submit');
     removeChildren(addNewItemContainerElement, [inputPromptElement, submitButton]);
     isAddNewItemInputPromptShowing = false;
 }
@@ -29,7 +30,7 @@ const onCheckboxCheck = (todoItemTextElement, checkboxElement, todoItemContainer
     if (checkboxElement.checked){
         todoItemTextElement.className = "todo-item-text-checked";
         todoListItems = todoListItems.map(item => {
-            if (item.id.toString() === todoItemContainer.id){
+            if (item.id === todoItemContainer.id){
                 item.isChecked = true;
             }
             return item;
@@ -38,7 +39,7 @@ const onCheckboxCheck = (todoItemTextElement, checkboxElement, todoItemContainer
     else{
         todoItemTextElement.className = "todo-item-text";
         todoListItems = todoListItems.map(item => {
-            if (item.id.toString() === todoItemContainer.id){
+            if (item.id === todoItemContainer.id){
                 item.isChecked = false;
             }
             return item;
@@ -74,7 +75,8 @@ const setActionsEventListeners = (elements) => {
     addEventListener(elements.editIcon, 'click', () => editTodoItem(elements));
 }
 
-const onEditItemSubmit = (elements, newValue) => {
+const onEditItemSubmit = (elements) => {
+    const newValue = elements.inputPromptElement.value;
     if (newValue !== ""){
         elements.todoItemTextElement.innerText = newValue;
         todoListItems = todoListItems.map(item => {
@@ -89,31 +91,32 @@ const onEditItemSubmit = (elements, newValue) => {
 }
 
 const removeEditItemInputPrompt = (elements) => {
-    removeChildren(elements.todoActionsContainer, [elements.todoActionsContainer.children[1], elements.todoActionsContainer.children[2]]);
+    removeChildren(elements.todoActionsContainer, [elements.inputPromptElement, elements.submitButton]);
     elements.todoItemContainer.isInEditMode = false;
 }
 
 const addEditItemInputPrompt = (elements) => {
     const {inputPromptElement, submitButton} = createInputPromptElements();
-    insertBefore(elements.todoActionsContainer, [inputPromptElement, submitButton], elements.deleteIcon);
-    inputPromptElement.focus();
-    inputPromptElement.value = elements.todoItemTextElement.innerText;
+    elements = {...elements, inputPromptElement, submitButton};
+    insertBefore(elements.todoActionsContainer, [elements.inputPromptElement, elements.submitButton], elements.deleteIcon);
+    elements.inputPromptElement.focus();
+    elements.inputPromptElement.value = elements.todoItemTextElement.innerText;
     elements.todoItemContainer.isInEditMode = true;
-    addEventListener(submitButton, 'click', () => onEditItemSubmit(elements, inputPromptElement.value));
-    addEventListener(inputPromptElement, 'keyup', (event) => {
+    addEventListener(elements.submitButton, 'click', () => onEditItemSubmit(elements));
+    addEventListener(elements.inputPromptElement, 'keyup', (event) => {
         if (event.key === "Enter"){
-            onEditItemSubmit(elements, inputPromptElement.value);
+            onEditItemSubmit(elements);
         }
     })
 }
 
 const editTodoItem = (elements) => {
-    elements.todoItemContainer.isInEditMode ? removeEditItemInputPrompt(elements) : addEditItemInputPrompt(elements);
+    elements.todoItemContainer.isInEditMode ? null : addEditItemInputPrompt(elements);
 }
 
 const removeTodoItem = (elements) => {
     removeChildren(todoListContainerElement, [elements.todoItemContainer]);
-    todoListItems = todoListItems.filter(item => item.id.toString() !== elements.todoItemContainer.id);
+    todoListItems = todoListItems.filter(item => item.id !== elements.todoItemContainer.id);
     setInLocalStorage("todoList", todoListItems);
 }
 
@@ -132,20 +135,24 @@ const createTodoActionsContainer = (todoItemContainer, todoItemTextElement) => {
 }
 
 const onAddNewItemInputSubmit = (newItemText, isChecked) => {
-    const todoItemContainer = createTodoItemContainer();
-    const todoItemTextElement = createTodoItemTextElement(newItemText, isChecked);
-    const checkboxElement = createCheckboxElement(todoItemTextElement, todoItemContainer, isChecked);
-    const todoActionsContainer = createTodoActionsContainer(todoItemContainer, todoItemTextElement);
-    appendChildren(todoItemContainer, [checkboxElement, todoItemTextElement, todoActionsContainer]);
-    insertBefore(todoListContainerElement, [todoItemContainer], todoListContainerElement.children[0]);
-    ID++;
-    todoItemContainer.id = ID;
-    todoListItems.push({id: ID, text: newItemText, isChecked});
-    setInLocalStorage("todoList", todoListItems);
+    if (newItemText !== ""){
+        const todoItemContainer = createTodoItemContainer();
+        const todoItemTextElement = createTodoItemTextElement(newItemText, isChecked);
+        const checkboxElement = createCheckboxElement(todoItemTextElement, todoItemContainer, isChecked);
+        const todoActionsContainer = createTodoActionsContainer(todoItemContainer, todoItemTextElement);
+        appendChildren(todoItemContainer, [checkboxElement, todoItemTextElement, todoActionsContainer]);
+        insertBefore(todoListContainerElement, [todoItemContainer], todoListContainerElement.firstChild);
+        const id = uuidv4();
+        todoItemContainer.id = id;
+        todoListItems.push({id, text: newItemText, isChecked});
+        setInLocalStorage("todoList", todoListItems);
+    }
 }
 
-const createAddNewItemInputPrompt = () =>{
+const createAddNewItemInputPrompt = () => {
     const {inputPromptElement, submitButton} = createInputPromptElements();
+    inputPromptElement.setAttribute('data-hook', 'new-item-input');
+    submitButton.setAttribute('data-hook', 'new-item-submit');
     appendChildren(addNewItemContainerElement, [inputPromptElement, submitButton]);
     addEventListener(inputPromptElement, 'keyup', (event) => {
         if (event.key === "Enter"){
@@ -173,9 +180,8 @@ const createInputPromptElements = () => {
 addEventListener(addNewItemButton, 'click', onAddNewItemClick);
 
 const importedTodoListItems = getFromLocalStorage("todoList");
-if (importedTodoListItems){
-    for (const item of importedTodoListItems){
-        onAddNewItemInputSubmit(item.text, item.isChecked);
-    }    
-}
+for (const item of importedTodoListItems){
+    onAddNewItemInputSubmit(item.text, item.isChecked);
+}    
+
 
