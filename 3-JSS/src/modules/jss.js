@@ -1,119 +1,122 @@
-import jss from 'jss';
-import global from 'jss-plugin-global';
+import {create} from 'jss'
+import camelCase from 'jss-plugin-camel-case';
+import global from 'jss-plugin-global'
 
-jss.use(global());
+
+const jss = create();
+jss.use(camelCase(), global());
+
 
 export const createStyleSheet = () =>{
-    const styleSheet = jss
-    .createStyleSheet({
+    const styleSheet = jss.createStyleSheet({
         '@global': {
             body: {
                 margin: "0px",
-                "font-family": "sans-serif"
+                fontFamily: "sans-serif"
             },
-        
-            ".app-header": {
+        },
+            appHeader: {
                 height: "30%",
                 background: "violet",
-                "border-bottom-right-radius": "50%",
-                "border-bottom-left-radius": "50%",
+                borderBottomLeftRadius: "50%",
+                borderBottomRightRadius: "50%",
                 display: "flex",
-                "justify-content": "center",
-                "align-items": "center",
+                justifyContent: "center",
+                alignItems: "center",
                 color: "white",
-                "font-size": "47px",
-                "text-align": "center",
-                "line-height": "70px"
+                fontSize: "47px",
+                textAlign: "center",
+                lineHeight: "70px"
             },
             
-            ".app-footer": {
+           appFooter: {
                 height: "10%",
                 background: "purple",
                 color: "white",
                 display: "flex",
-                "justify-content": "center",
-                "align-items": "center",
+                justifyContent: "center",
+                alignItems: "center",
                 position: "absolute",
                 bottom: "0px",
                 width: "100%"
             },
             
-            ".new-item-button": {
-                "align-items": "center",
+            newItemButton: {
+                alignItems: "center",
                 background: 'pink',
                 display: "flex",
                 width: "108px",
                 padding: "15px",
-                "justify-content": "space-between",
-                "border-radius": "5px",
+                justifyContent: "space-between",
+                borderRadius: "5px",
                 color: "white",
-                "font-size": "17px",
+                fontSize: "17px",
                 cursor: "pointer"
             }, 
             
-            ".add-icon": {
+            addIcon: {
                 height: "30px",
                 filter: "brightness(0) invert(1)"
             }, 
             
-            ".app-body-container": {
+            appBodyContainer: {
                 padding: "50px 70px"
             },
             
-            ".new-item-container": {
+            newItemContainer: {
                 display: "flex",
-                "align-items": "flex-end"
+                alignItems: "flex-end"
             },
             
-            ".input": {
-                "margin-left": "10px",
+            input: {
+                marginLeft: "10px",
                 outline: "none",
                 border: "none",
-                "border-bottom": "1px solid gray"
+                borderBottom: "1px solid gray"
             },
             
-            ".submit-button": {
-                "margin-left": "10px",
+            submitButton: {
+                marginLeft: "10px",
                 border: "1px solid gray",
                 padding: "6px",
-                "border-radius": "5px",
+                borderRadius: "5px",
                 cursor: "pointer"
             },
             
-            ".icon": {
+            icon: {
                 height: "30px",
-                "margin-left": "10px",
+                marginLeft: "10px",
                 cursor: "pointer"
             },
             
-            ".todo-item": {
+            todoItem: {
                 display: "flex",
-                "align-items": "flex-end",
-                "margin-top": "30px"
+                alignItems: "flex-end",
+                marginTop: "30px"
             },
             
-            ".todo-item-text": {
-                "margin-left": "10px",
-                "font-size": "20px" 
+            todoItemText: {
+                marginLeft: "10px",
+                fontSize: "20px" 
             },
-            ".todo-item-text-checked": {
-              "margin-left": "10px",
-              "font-size": "20px",
-              "text-decoration": "line-through"
+            todoItemTextChecked :{
+                marginLeft: "10px",
+                fontSize: "20px",
+                textDecoration: "line-through"
             },
-            ".checkbox": { 
+            checkbox: { 
                 height: "20px", 
                 width: "20px" 
             },
-            ".list-container": { 
+            listContainer: { 
                 overflow: "scroll", 
                 height: "44%" 
             },
-            ".actions-container": { 
+            actionsContainer: { 
                 display: "flex" 
             }
-        }
     })
     .attach();
+    return styleSheet;
 }
 
