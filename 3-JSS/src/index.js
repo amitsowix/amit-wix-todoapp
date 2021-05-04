@@ -3,13 +3,26 @@ import {getFromLocalStorage, setInLocalStorage} from './modules/localstorage.js'
 import { v4 as uuidv4 } from 'uuid';
 import { createStyleSheet } from "./modules/jss.js";
 
-createStyleSheet();
+const styles = createStyleSheet().classes;
 
 const addNewItemContainerElement = getElementByData("new-item-container");
 const addNewItemButton = getElementByData("new-item-button");
 const todoListContainerElement = getElementByData("list-container");
+const appHeader = getElementByData("app-header");
+const appFooter = getElementByData("app-footer");
+const addIcon = getElementByData("add-icon");
+const appBodyContainer = getElementByData("app-body-container");
 
-let todoListItems = [];
+appHeader.className = styles.appHeader;
+appFooter.className = styles.appFooter;
+addIcon.className = styles.addIcon;
+appBodyContainer.className = styles.appBodyContainer;
+addNewItemContainerElement.className = styles.newItemContainer;
+addNewItemButton.className = styles.newItemButton;
+todoListContainerElement.className = styles.listContainer;
+
+
+let todoListItems = {};
 let isAddNewItemInputPromptShowing = false;
 
 const onAddNewItemClick = () => {
@@ -28,46 +41,30 @@ const showNewItemInputPrompt = () => {
     isAddNewItemInputPromptShowing = true;
 }
 
-const onCheckboxCheck = (todoItemTextElement, checkboxElement, todoItemContainer) => {
-    if (checkboxElement.checked){
-        todoItemTextElement.className = "todo-item-text-checked";
-        todoListItems = todoListItems.map(item => {
-            if (item.id === todoItemContainer.id){
-                item.isChecked = true;
-            }
-            return item;
-        })
-    }
-    else{
-        todoItemTextElement.className = "todo-item-text";
-        todoListItems = todoListItems.map(item => {
-            if (item.id === todoItemContainer.id){
-                item.isChecked = false;
-            }
-            return item;
-        })
-    }
+const onToggleCheckbox = (todoItemTextElement, checkboxElement, todoItemContainer) => {
+    todoItemTextElement.className = checkboxElement.checked ?  styles.todoItemTextChecked : styles.todoItemText;
+    todoListItems[todoItemContainer.id].isChecked = checkboxElement.checked ? true : false;
     setInLocalStorage("todoList", todoListItems);
 }
 
 const createCheckboxElement = (todoItemTextElement, todoItemContainer, isChecked) => {
     const checkboxElement = createElement('input');
     checkboxElement.type = 'checkbox';
-    checkboxElement.className = 'checkbox';
+    checkboxElement.className = styles.checkbox;
     checkboxElement.checked = isChecked;
-    addEventListener(checkboxElement, 'click', () => onCheckboxCheck(todoItemTextElement, checkboxElement, todoItemContainer));
+    addEventListener(checkboxElement, 'click', () => onToggleCheckbox(todoItemTextElement, checkboxElement, todoItemContainer));
     return checkboxElement;
 }
 
 const createTodoItemContainer = () => {
     const todoItemContainer = createElement('div');
-    todoItemContainer.className = "todo-item";
+    todoItemContainer.className = styles.todoItem;
     return todoItemContainer;
 }
 
 const createTodoItemTextElement = (newItemText, isChecked) => {
     const todoItemTextElement = createElement('div');
-    todoItemTextElement.className = isChecked ? "todo-item-text-checked" : "todo-item-text";
+    todoItemTextElement.className = isChecked ? styles.todoItemTextChecked : styles.todoItemText;
     todoItemTextElement.innerText = newItemText;
     return todoItemTextElement;
 }
@@ -81,12 +78,7 @@ const onEditItemSubmit = (elements) => {
     const newValue = elements.inputPromptElement.value;
     if (newValue !== ""){
         elements.todoItemTextElement.innerText = newValue;
-        todoListItems = todoListItems.map(item => {
-            if (item.id.toString() === elements.todoItemContainer.id){
-                item.text = newValue;
-            }
-            return item;
-        })
+        todoListItems[elements.todoItemContainer.id].text = newValue;
         setInLocalStorage("todoList", todoListItems);
         removeEditItemInputPrompt(elements);
     }
@@ -118,19 +110,19 @@ const editTodoItem = (elements) => {
 
 const removeTodoItem = (elements) => {
     removeChildren(todoListContainerElement, [elements.todoItemContainer]);
-    todoListItems = todoListItems.filter(item => item.id !== elements.todoItemContainer.id);
+    delete todoListItems[elements.todoItemContainer.id];
     setInLocalStorage("todoList", todoListItems);
 }
 
 const createTodoActionsContainer = (todoItemContainer, todoItemTextElement) => {
     const todoActionsContainer = createElement('div');
-    todoActionsContainer.className = 'actions-container';
+    todoActionsContainer.className = styles.actionsContainer;
     const editIcon = createElement('img');
     editIcon.src = './assets/edit.png';
-    editIcon.className = 'icon';
+    editIcon.className = styles.icon;
     const deleteIcon = createElement('img');
     deleteIcon.src = './assets/delete.png';
-    deleteIcon.className = 'icon';
+    deleteIcon.className = styles.icon;
     setActionsEventListeners({todoItemContainer, deleteIcon, editIcon, todoItemTextElement, todoActionsContainer});
     appendChildren(todoActionsContainer, [editIcon, deleteIcon]);
     return todoActionsContainer;
@@ -146,7 +138,7 @@ const onAddNewItemInputSubmit = (newItemText, isChecked) => {
         insertBefore(todoListContainerElement, [todoItemContainer], todoListContainerElement.firstChild);
         const id = uuidv4();
         todoItemContainer.id = id;
-        todoListItems.push({id, text: newItemText, isChecked});
+        todoListItems[id] = {text: newItemText, isChecked};
         setInLocalStorage("todoList", todoListItems);
     }
 }
@@ -173,9 +165,9 @@ const createAddNewItemInputPrompt = () => {
 const createInputPromptElements = () => {
     const inputPromptElement = createElement('input');
     const submitButton = createElement('div');
-    submitButton.className = "submit-button";
+    submitButton.className = styles.submitButton;
     submitButton.innerText = "GO!";
-    inputPromptElement.className = "input";
+    inputPromptElement.className = styles.input;
     return {inputPromptElement, submitButton};
 }
 
@@ -183,7 +175,7 @@ const createInputPromptElements = () => {
 addEventListener(addNewItemButton, 'click', onAddNewItemClick);
 
 const importedTodoListItems = getFromLocalStorage("todoList");
-for (const item of importedTodoListItems){
+for (const [id, item] of Object.entries(importedTodoListItems)){
     onAddNewItemInputSubmit(item.text, item.isChecked);
 }    
 
