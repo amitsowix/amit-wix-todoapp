@@ -1,7 +1,7 @@
 import {createElement, getElementByData, removeChildren, appendChildren, insertBefore, addEventListener} from "./modules/dom.js";
 import { v4 as uuidv4 } from 'uuid';
 import { createStyleSheet } from "./modules/jss.js";
-import { HttpClient } from "./modules/http.js";
+import { ServerAPI } from "./modules/serverApi.js";
 
 const styles = createStyleSheet().classes;
 
@@ -21,7 +21,7 @@ addNewItemContainerElement.className = styles.newItemContainer;
 addNewItemButton.className = styles.newItemButton;
 todoListContainerElement.className = styles.listContainer;
 
-const httpClient = new HttpClient();
+const serverApi = new ServerAPI();
 
 let todoListItems = {};
 let isAddNewItemInputPromptShowing = false;
@@ -46,7 +46,7 @@ const showNewItemInputPrompt = () => {
 const onToggleCheckbox = (todoItemTextElement, checkboxElement, todoItemContainer) => {
     todoItemTextElement.className = checkboxElement.checked ?  styles.todoItemTextChecked : styles.todoItemText;
     todoListItems[todoItemContainer.id].isChecked = checkboxElement.checked ? true : false;
-    httpClient.post("todoItemsList", todoListItems);
+    serverApi.editTodoItem(todoItemContainer.id, todoListItems[todoItemContainer.id]);
 }
 
 const createCheckboxElement = (todoItemTextElement, todoItemContainer, isChecked) => {
@@ -81,7 +81,7 @@ const onEditItemSubmit = (elements) => {
     if (newValue !== ""){
         elements.todoItemTextElement.innerText = newValue;
         todoListItems[elements.todoItemContainer.id].text = newValue;
-        httpClient.post("todoItemsList", todoListItems);
+        serverApi.editTodoItem(elements.todoItemContainer.id, todoListItems[elements.todoItemContainer.id]);
         removeEditItemInputPrompt(elements);
     }
 }
@@ -113,7 +113,7 @@ const editTodoItem = (elements) => {
 const removeTodoItem = (elements) => {
     removeChildren(todoListContainerElement, [elements.todoItemContainer]);
     delete todoListItems[elements.todoItemContainer.id];
-    httpClient.post("todoItemsList", todoListItems);
+    serverApi.deleteTodoItem(elements.todoItemContainer.id);
 }
 
 const createTodoActionsContainer = (todoItemContainer, todoItemTextElement) => {
@@ -130,7 +130,7 @@ const createTodoActionsContainer = (todoItemContainer, todoItemTextElement) => {
     return todoActionsContainer;
 }
 
-const onAddNewItemInputSubmit = (newItemText, isChecked) => {
+const onAddNewItemInputSubmit = (newItemText, isChecked, id) => {
     if (newItemText !== ""){
         const todoItemContainer = createTodoItemContainer();
         const todoItemTextElement = createTodoItemTextElement(newItemText, isChecked);
@@ -138,10 +138,12 @@ const onAddNewItemInputSubmit = (newItemText, isChecked) => {
         const todoActionsContainer = createTodoActionsContainer(todoItemContainer, todoItemTextElement);
         appendChildren(todoItemContainer, [checkboxElement, todoItemTextElement, todoActionsContainer]);
         insertBefore(todoListContainerElement, [todoItemContainer], todoListContainerElement.firstChild);
-        const id = uuidv4();
+        if (!id){
+            id = uuidv4();
+            serverApi.addTodoItem({text: newItemText, isChecked, id});
+        }
         todoItemContainer.id = id;
-        todoListItems[id] = {text: newItemText, isChecked};
-        httpClient.post("todoItemsList", todoListItems);
+        todoListItems[id] = {text: newItemText, isChecked, id};
     }
 }
 
@@ -152,12 +154,12 @@ const createAddNewItemInputPrompt = () => {
     appendChildren(addNewItemContainerElement, [inputPromptElement, submitButton]);
     addEventListener(inputPromptElement, 'keyup', (event) => {
         if (event.key === "Enter"){
-            onAddNewItemInputSubmit(inputPromptElement.value, false);
+            onAddNewItemInputSubmit(inputPromptElement.value, false, false);
             inputPromptElement.value = "";
         }
     })
     addEventListener(submitButton, 'click', () => {
-        onAddNewItemInputSubmit(inputPromptElement.value, false);
+        onAddNewItemInputSubmit(inputPromptElement.value, false, false);
         inputPromptElement.value = "";
     })
     inputPromptElement.focus();
@@ -175,16 +177,14 @@ const createInputPromptElements = () => {
 
 const createTodoItemsFromServer = (importedTodoListItems) => {
     for (const [id, item] of Object.entries(importedTodoListItems)){
-        onAddNewItemInputSubmit(item.text, item.isChecked);
+        onAddNewItemInputSubmit(item.text, item.isChecked, item.id);
     }   
 }
 
-const initApp = async () => {
+const initApp = () => {
     addEventListener(addNewItemButton, 'click', onAddNewItemClick);
-    await httpClient.get("todoItemsList", createTodoItemsFromServer);
+    serverApi.getTodoItemsList(createTodoItemsFromServer);
 }
 
-
- 
 initApp();
 
