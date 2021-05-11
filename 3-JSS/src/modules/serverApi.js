@@ -1,7 +1,6 @@
 const axios = require('axios');
 
 
-
 export class ServerAPI {
 
     getTodoItemsList(callback) {
@@ -15,7 +14,7 @@ export class ServerAPI {
     }
 
     addTodoItem(todoItem) {
-        axios.post('/api/addTodoItem', {data: todoItem})
+        axios.post('/api/addTodoItem', { data: todoItem })
             .then(function (response) {
             })
             .catch(function (error) {
@@ -24,16 +23,16 @@ export class ServerAPI {
     }
 
     deleteTodoItem(id) {
-        axios.delete('api/deleteTodoItem/' + id)            
+        axios.delete('api/deleteTodoItem/' + id)
             .then(function (response) {
             })
             .catch(function (error) {
-            console.log(error);
+                console.log(error);
             });
     }
 
     editTodoItem(id, updatedTodoItem) {
-        axios.post('/api/editTodoItem/' + id, {data: updatedTodoItem})
+        axios.post('/api/editTodoItem/' + id, { data: updatedTodoItem })
             .then(function (response) {
             })
             .catch(function (error) {
@@ -41,3 +40,5 @@ export class ServerAPI {
             });
     }
 }
+
+export default new ServerAPI();
