@@ -1,7 +1,7 @@
 import {createElement, getElementByData, removeChildren, appendChildren, insertBefore, addEventListener} from "./modules/dom.js";
 import { v4 as uuidv4 } from 'uuid';
 import { createStyleSheet } from "./modules/jss.js";
-import { ServerAPI } from "./modules/serverApi.js";
+import serverApi from "./modules/serverApi.js";
 
 const styles = createStyleSheet().classes;
 
@@ -20,8 +20,6 @@ appBodyContainer.className = styles.appBodyContainer;
 addNewItemContainerElement.className = styles.newItemContainer;
 addNewItemButton.className = styles.newItemButton;
 todoListContainerElement.className = styles.listContainer;
-
-const serverApi = new ServerAPI();
 
 let todoListItems = {};
 let isAddNewItemInputPromptShowing = false;
