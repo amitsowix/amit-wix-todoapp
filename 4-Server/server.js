@@ -16,9 +16,9 @@ const client = redis.createClient(process.env.REDIS_URL);
 
 let currentUserId;
 
-// app.get('/', (req, res) => {
-//     res.sendFile(path.resolve(__dirname, '../3-JSS/src/index.html'));
-//   });
+app.get('/', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../3-JSS/dist/index.html'));
+  });
 
 app.use((req, res, next) => {
     if (!req.cookies?.todoAppUserId){
