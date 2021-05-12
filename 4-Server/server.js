@@ -1,17 +1,15 @@
 
 const { v4: uuidv4 } = require('uuid');
-const fs = require("fs");
 const path = require('path');
 const express = require('express');
 const app = express();
-const port = 3000;
 
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
 app.use(express.json());
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '../3-JSS/index.html'));
 
 const redis = require('redis');
 const client = redis.createClient(process.env.REDIS_URL);
@@ -19,11 +17,10 @@ const client = redis.createClient(process.env.REDIS_URL);
 let currentUserId;
 
 app.get('/', (req, res) => {
-    res.sendFile(path.resolve(__dirname, './public/index.html'));
+    res.sendFile(path.resolve(__dirname, '../3-JSS/index.html'));
   });
 
 app.use((req, res, next) => {
-    console.log("HERE");
     if (!req.cookies?.todoAppUserId){
         currentUserId = uuidv4();
         res.cookie("todoAppUserId", currentUserId);
@@ -35,7 +32,6 @@ app.use((req, res, next) => {
 })
 
 app.get('/api/todoItemsList', (req, res) => {
-    console.log("THERE");
     client.get(currentUserId, (err, data)=>{
         if (err) {
             console.log(err);
@@ -76,7 +72,7 @@ app.post('/api/editTodoItem/:itemId', (req, res) => {
     })
 })
 
-
+const port = 3000;
 app.listen(process.env.PORT || port, () => {
 })
 
