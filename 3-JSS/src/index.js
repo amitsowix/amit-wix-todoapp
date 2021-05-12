@@ -179,9 +179,18 @@ const createTodoItemsFromServer = (importedTodoListItems) => {
     }   
 }
 
-const initApp = () => {
+const showError = (errorMessage) => {
+    const errorDiv = document.createElement('div');
+    errorDiv.innerText = errorMessage;
+    todoListContainerElement.appendChild(errorDiv);
+}
+
+const initApp = async () => {
     addEventListener(addNewItemButton, 'click', onAddNewItemClick);
-    serverApi.getTodoItemsList(createTodoItemsFromServer);
+    const todoItems = await serverApi.getTodoItemsList().catch(()=>{
+        showError("Error getting data from database");
+    })
+    createTodoItemsFromServer(todoItems);
 }
 
 initApp();
