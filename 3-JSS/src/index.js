@@ -12,6 +12,8 @@ const appHeader = getElementByData("app-header");
 const appFooter = getElementByData("app-footer");
 const addIcon = getElementByData("add-icon");
 const appBodyContainer = getElementByData("app-body-container");
+const appContainer = getElementByData("app-container");
+const loader = getElementByData("loader");
 
 appHeader.className = styles.appHeader;
 appFooter.className = styles.appFooter;
@@ -20,6 +22,9 @@ appBodyContainer.className = styles.appBodyContainer;
 addNewItemContainerElement.className = styles.newItemContainer;
 addNewItemButton.className = styles.newItemButton;
 todoListContainerElement.className = styles.listContainer;
+
+loader.style.display = "none";
+appContainer.style.display = "block";
 
 let todoListItems = {};
 let isAddNewItemInputPromptShowing = false;
