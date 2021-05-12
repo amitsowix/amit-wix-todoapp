@@ -18,7 +18,15 @@ let currentUserId;
 
 app.get('/', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../3-JSS/dist/index.html'));
-  });
+});
+
+app.get('/main.js', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../3-JSS/dist/main.js'));
+});
+
+app.get('/add.png', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../3-JSS/src/assets/add.png'));
+});
 
 app.use((req, res, next) => {
     if (!req.cookies?.todoAppUserId){
