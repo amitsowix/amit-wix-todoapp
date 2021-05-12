@@ -118,10 +118,10 @@ const createTodoActionsContainer = (todoItemContainer, todoItemTextElement) => {
     const todoActionsContainer = createElement('div');
     todoActionsContainer.className = styles.actionsContainer;
     const editIcon = createElement('img');
-    editIcon.src = './assets/edit.png';
+    editIcon.src = 'edit.png';
     editIcon.className = styles.icon;
     const deleteIcon = createElement('img');
-    deleteIcon.src = './assets/delete.png';
+    deleteIcon.src = 'delete.png';
     deleteIcon.className = styles.icon;
     setActionsEventListeners({todoItemContainer, deleteIcon, editIcon, todoItemTextElement, todoActionsContainer});
     appendChildren(todoActionsContainer, [editIcon, deleteIcon]);
