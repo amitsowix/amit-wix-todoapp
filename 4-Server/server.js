@@ -27,6 +27,14 @@ app.get('/add.png', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../3-JSS/src/assets/add.png'));
 });
 
+app.get('/delete.png', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../3-JSS/src/assets/delete.png'));
+});
+
+app.get('/edit.png', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../3-JSS/src/assets/edit.png'));
+});
+
 app.use((req, res, next) => {
     if (!req.cookies?.todoAppUserId){
         currentUserId = uuidv4();
