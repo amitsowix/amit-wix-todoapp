@@ -3,14 +3,15 @@ const axios = require('axios');
 
 export class ServerAPI {
 
-    getTodoItemsList(callback) {
-        axios.get('/api/todoItemsList')
-            .then(function (response) {
-                callback(response.data);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+    async getTodoItemsList() {
+        try{
+            const res = await axios.get('/api/todoItemsList');
+            return res.data;
+        }
+        catch(error) {
+            console.log(error);
+            throw new Error(error);
+        }
     }
 
     addTodoItem(todoItem) {
@@ -19,6 +20,7 @@ export class ServerAPI {
             })
             .catch(function (error) {
                 console.log(error);
+                throw new Error(error);
             });
     }
 
@@ -28,6 +30,7 @@ export class ServerAPI {
             })
             .catch(function (error) {
                 console.log(error);
+                throw new Error(error);
             });
     }
 
@@ -37,6 +40,7 @@ export class ServerAPI {
             })
             .catch(function (error) {
                 console.log(error);
+                throw new Error(error);
             });
     }
 }

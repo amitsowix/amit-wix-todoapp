@@ -12,6 +12,8 @@ const appHeader = getElementByData("app-header");
 const appFooter = getElementByData("app-footer");
 const addIcon = getElementByData("add-icon");
 const appBodyContainer = getElementByData("app-body-container");
+const appContainer = getElementByData("app-container");
+const loader = getElementByData("loader");
 
 appHeader.className = styles.appHeader;
 appFooter.className = styles.appFooter;
@@ -20,6 +22,9 @@ appBodyContainer.className = styles.appBodyContainer;
 addNewItemContainerElement.className = styles.newItemContainer;
 addNewItemButton.className = styles.newItemButton;
 todoListContainerElement.className = styles.listContainer;
+
+loader.style.display = "none";
+appContainer.style.display = "block";
 
 let todoListItems = {};
 let isAddNewItemInputPromptShowing = false;
@@ -118,10 +123,10 @@ const createTodoActionsContainer = (todoItemContainer, todoItemTextElement) => {
     const todoActionsContainer = createElement('div');
     todoActionsContainer.className = styles.actionsContainer;
     const editIcon = createElement('img');
-    editIcon.src = './assets/edit.png';
+    editIcon.src = 'edit.png';
     editIcon.className = styles.icon;
     const deleteIcon = createElement('img');
-    deleteIcon.src = './assets/delete.png';
+    deleteIcon.src = 'delete.png';
     deleteIcon.className = styles.icon;
     setActionsEventListeners({todoItemContainer, deleteIcon, editIcon, todoItemTextElement, todoActionsContainer});
     appendChildren(todoActionsContainer, [editIcon, deleteIcon]);
@@ -179,9 +184,21 @@ const createTodoItemsFromServer = (importedTodoListItems) => {
     }   
 }
 
-const initApp = () => {
+const showError = (errorMessage) => {
+    const errorDiv = document.createElement('div');
+    errorDiv.innerText = errorMessage;
+    todoListContainerElement.appendChild(errorDiv);
+}
+
+const initApp = async () => {
     addEventListener(addNewItemButton, 'click', onAddNewItemClick);
-    serverApi.getTodoItemsList(createTodoItemsFromServer);
+    try {
+        const todoItems = await serverApi.getTodoItemsList();
+        createTodoItemsFromServer(todoItems);
+    }
+    catch(e){
+        showError("Error getting data from database");
+    }
 }
 
 initApp();

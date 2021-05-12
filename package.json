@@ -4,7 +4,9 @@
   "description": "",
   "main": "./4-Server/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "cd ./3-JSS/ && npm install && npm run build",
+    "start": "node 4-Server/server.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,22 @@
   "bugs": {
     "url": "https://github.com/amitsowix/amit-wix-todoapp/issues"
   },
-  "homepage": "https://github.com/amitsowix/amit-wix-todoapp#readme"
+  "homepage": "https://github.com/amitsowix/amit-wix-todoapp#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "html-webpack-plugin": "^5.3.1",
+    "jss": "^10.6.0",
+    "jss-plugin-camel-case": "^10.6.0",
+    "jss-plugin-global": "^10.6.0",
+    "path": "^0.12.7",
+    "redis": "^3.1.2",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "webpack": "^5.37.0",
+    "webpack-cli": "^4.7.0"
+  }
 }
