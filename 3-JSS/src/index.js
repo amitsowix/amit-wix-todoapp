@@ -187,10 +187,13 @@ const showError = (errorMessage) => {
 
 const initApp = async () => {
     addEventListener(addNewItemButton, 'click', onAddNewItemClick);
-    const todoItems = await serverApi.getTodoItemsList().catch(()=>{
+    try {
+        const todoItems = await serverApi.getTodoItemsList();
+        createTodoItemsFromServer(todoItems);
+    }
+    catch(e){
         showError("Error getting data from database");
-    })
-    createTodoItemsFromServer(todoItems);
+    }
 }
 
 initApp();
