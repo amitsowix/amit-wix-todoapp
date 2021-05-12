@@ -1,0 +1,19 @@
+{
+  "name": "amit-wix-todoapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./4-Server/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/amitsowix/amit-wix-todoapp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amitsowix/amit-wix-todoapp/issues"
+  },
+  "homepage": "https://github.com/amitsowix/amit-wix-todoapp#readme"
+}
