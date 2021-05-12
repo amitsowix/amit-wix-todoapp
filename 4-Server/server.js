@@ -9,7 +9,6 @@ app.use(cookieParser());
 
 app.use(express.json());
 
-app.use(express.static(__dirname + '../3-JSS/dist'));
 
 const redis = require('redis');
 const client = redis.createClient(process.env.REDIS_URL);
@@ -17,7 +16,7 @@ const client = redis.createClient(process.env.REDIS_URL);
 let currentUserId;
 
 app.get('/', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../3-JSS/dist/index.html'));
+    res.sendFile(path.resolve(__dirname, '../3-JSS/src/index.html'));
 });
 
 app.get('/main.js', (req, res) => {
