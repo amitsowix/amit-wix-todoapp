@@ -9,7 +9,7 @@ app.use(cookieParser());
 
 app.use(express.json());
 
-app.use(express.static(__dirname + '../3-JSS/src'));
+app.use(express.static(__dirname + '../3-JSS/src/index.html'));
 
 const redis = require('redis');
 const client = redis.createClient(process.env.REDIS_URL);
