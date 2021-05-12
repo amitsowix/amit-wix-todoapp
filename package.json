@@ -4,7 +4,9 @@
   "description": "",
   "main": "./4-Server/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "cd 3-JSS/ && npm install && npm run build",
+    "start": "node 4-Server/server.js"
   },
   "repository": {
     "type": "git",
