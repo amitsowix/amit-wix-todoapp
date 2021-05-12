@@ -9,16 +9,16 @@ app.use(cookieParser());
 
 app.use(express.json());
 
-app.use(express.static(__dirname + '../3-JSS/src/index.html'));
+//app.use(express.static(__dirname + '../3-JSS/src/index.html'));
 
 const redis = require('redis');
 const client = redis.createClient(process.env.REDIS_URL);
 
 let currentUserId;
 
-// app.get('/', (req, res) => {
-//     res.sendFile(path.resolve(__dirname, '../3-JSS/src'));
-//   });
+app.get('/', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../3-JSS/src/index.html'));
+  });
 
 app.use((req, res, next) => {
     if (!req.cookies?.todoAppUserId){
