@@ -15,5 +15,15 @@
   "bugs": {
     "url": "https://github.com/amitsowix/amit-wix-todoapp/issues"
   },
-  "homepage": "https://github.com/amitsowix/amit-wix-todoapp#readme"
+  "homepage": "https://github.com/amitsowix/amit-wix-todoapp#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jss": "^10.6.0",
+    "jss-plugin-camel-case": "^10.6.0",
+    "jss-plugin-global": "^10.6.0",
+    "redis": "^3.1.2",
+    "uuid": "^8.3.2"
+  }
 }
