@@ -35,7 +35,7 @@ app.get('/edit.png', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../3-JSS/src/assets/edit.png'));
 });
 
-app.get('/loade.gif', (req, res) => {
+app.get('/loader.gif', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../3-JSS/src/assets/loader.gif'));
 });
 
