@@ -18,13 +18,6 @@ app.use(express.static(path.resolve(__dirname, '../3-JSS/dist')));
 
 let currentUserId;
 
-// app.get('/', (req, res) => {
-//     res.sendFile(path.resolve(__dirname, '../3-JSS/src/index.html'));
-// });
-
-app.get('/main.js', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../3-JSS/dist/main.js'));
-});
 
 app.get('/add.png', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../3-JSS/src/assets/add.png'));
