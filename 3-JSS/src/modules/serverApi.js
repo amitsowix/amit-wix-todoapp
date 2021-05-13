@@ -1,7 +1,13 @@
 const axios = require('axios');
 
 
+const handleError = (error) => {
+    console.log(error);
+    throw error;
+}
+
 export class ServerAPI {
+
 
     async getTodoItemsList() {
         try{
@@ -9,8 +15,7 @@ export class ServerAPI {
             return res.data;
         }
         catch(error) {
-            console.log(error);
-            throw new Error(error);
+            handleError(error);
         }
     }
 
@@ -19,8 +24,7 @@ export class ServerAPI {
             .then(function (response) {
             })
             .catch(function (error) {
-                console.log(error);
-                throw new Error(error);
+                handleError(error);
             });
     }
 
@@ -29,8 +33,7 @@ export class ServerAPI {
             .then(function (response) {
             })
             .catch(function (error) {
-                console.log(error);
-                throw new Error(error);
+                handleError(error);
             });
     }
 
@@ -39,8 +42,7 @@ export class ServerAPI {
             .then(function (response) {
             })
             .catch(function (error) {
-                console.log(error);
-                throw new Error(error);
+                handleError(error);
             });
     }
 }

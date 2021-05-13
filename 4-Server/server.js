@@ -13,11 +13,14 @@ app.use(express.json());
 const redis = require('redis');
 const client = redis.createClient(process.env.REDIS_URL);
 
+app.use(express.static(path.resolve(__dirname, '../3-JSS/dist')));
+
+
 let currentUserId;
 
-app.get('/', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../3-JSS/src/index.html'));
-});
+// app.get('/', (req, res) => {
+//     res.sendFile(path.resolve(__dirname, '../3-JSS/src/index.html'));
+// });
 
 app.get('/main.js', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../3-JSS/dist/main.js'));
