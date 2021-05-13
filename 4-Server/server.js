@@ -19,21 +19,21 @@ app.use(express.static(path.resolve(__dirname, '../3-JSS/dist')));
 let currentUserId;
 
 
-app.get('/add.png', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../3-JSS/src/assets/add.png'));
-});
+// app.get('/add.png', (req, res) => {
+//     res.sendFile(path.resolve(__dirname, '../3-JSS/src/assets/add.png'));
+// });
 
-app.get('/delete.png', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../3-JSS/src/assets/delete.png'));
-});
+// app.get('/delete.png', (req, res) => {
+//     res.sendFile(path.resolve(__dirname, '../3-JSS/src/assets/delete.png'));
+// });
 
-app.get('/edit.png', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../3-JSS/src/assets/edit.png'));
-});
+// app.get('/edit.png', (req, res) => {
+//     res.sendFile(path.resolve(__dirname, '../3-JSS/src/assets/edit.png'));
+// });
 
-app.get('/loader.gif', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../3-JSS/src/assets/loader.gif'));
-});
+// app.get('/loader.gif', (req, res) => {
+//     res.sendFile(path.resolve(__dirname, '../3-JSS/src/assets/loader.gif'));
+// });
 
 app.use((req, res, next) => {
     if (!req.cookies?.todoAppUserId){
