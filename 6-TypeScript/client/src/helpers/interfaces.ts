@@ -13,6 +13,12 @@ export interface ElementsObject {
     submitAddNewItem: HTMLElement;
 }
 
+export interface ServerTodoItem {
+    id: string,
+    text: string,
+    isChecked: Boolean,
+}
+
 export interface TodoItem {
     id: String;
     text: String;

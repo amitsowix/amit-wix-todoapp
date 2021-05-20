@@ -1,7 +1,7 @@
-import { ElementsObject, TodoList } from "../helpers/interfaces";
+import { ElementsObject, ServerTodoItem, TodoList } from "../helpers/interfaces";
 import { TodoItem } from "./TodoItem";
 import { v4 as uuidv4 } from "uuid";
-
+import serverAPI from "../helpers/serverapi";
 export class TodoItemsList {
 
     todoListContainerElement: HTMLElement;
@@ -18,8 +18,16 @@ export class TodoItemsList {
         this.submitAddNewItemButton = elements.submitAddNewItem;
     }
 
-    init: Function = () => {
+    init: Function = async () => {
         this.setAddNewItemEvents();
+        await this.createListFromServer();
+    }
+
+    createListFromServer: Function = async () => {
+        const todoItems: TodoList = await serverAPI.getTodoItemsList();
+        for (const [id, item] of Object.entries(todoItems)){
+            this.onAddNewItemSubmit(item);
+        }
     }
 
     hideAddNewItemInput: Function = () => {
@@ -39,11 +47,28 @@ export class TodoItemsList {
         this.isAddNewItemInputShowing ? this.hideAddNewItemInput() : this.showAddNewItemInput();
     }
 
-    onAddNewItemSubmit: Function = () => {
-        const id = uuidv4();
-        const todoItem = new TodoItem(id, this.addNewItemInput.value, false);
-        this.todoList[id] = todoItem;
+    deleteItemFromList: Function = (todoItem: HTMLElement) => {
+        this.todoListContainerElement.removeChild(todoItem);
+    }
+
+    onAddNewItemSubmit: Function = (itemFromServer: ServerTodoItem) => {
+        let id, isChecked, text;
+        if (itemFromServer){
+            id = itemFromServer.id;
+            text = itemFromServer.text;
+            isChecked = itemFromServer.isChecked;
+        }
+        else{
+            id = uuidv4();
+            text = this.addNewItemInput.value;
+            isChecked = false;
+        }
+        const todoItem: TodoItem = new TodoItem(id, text, isChecked, this.deleteItemFromList);
         this.todoListContainerElement.insertBefore(todoItem.todoItemContainer, this.todoListContainerElement.firstChild);
+        if (!itemFromServer){
+            const newTodoItem: ServerTodoItem = {id, text: this.addNewItemInput.value, isChecked: false};
+            serverAPI.addTodoItem(newTodoItem);
+        }
         this.addNewItemInput.value = "";
     }
 
@@ -58,7 +83,5 @@ export class TodoItemsList {
         })
         this.addNewItemButton.addEventListener('click', () => this.onAddNewItemClick());
     }
-
-
 
 }   

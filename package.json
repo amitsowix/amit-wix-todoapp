@@ -5,8 +5,8 @@
   "main": "./4-Server/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cd ./3-JSS/ && npm install && npm run build",
-    "start": "node 4-Server/server.js"
+    "build": "cd client && npm install && npm run build",
+    "start": "nodemon server/index.ts"
   },
   "repository": {
     "type": "git",
@@ -21,7 +21,6 @@
   "dependencies": {
     "axios": "^0.21.1",
     "cookie-parser": "^1.4.5",
-    "cors": "^2.8.5",
     "express": "^4.17.1",
     "html-webpack-plugin": "^5.3.1",
     "jss": "^10.6.0",

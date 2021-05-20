@@ -1,4 +1,6 @@
 import { styles } from "../helpers/jss";
+import serverapi from "../helpers/serverapi";
+import serverApi from "../helpers/serverapi";
 
 export class TodoItem {
 
@@ -14,12 +16,14 @@ export class TodoItem {
     isInEditMode: Boolean;
     editInput: HTMLInputElement;
     submitButton: HTMLElement;
+    deleteItemFromList: Function;
 
-    constructor(id: string, text: string, isChecked: Boolean) {
+    constructor(id: string, text: string, isChecked: Boolean, deleteItemFromList: Function) {
         this.id = id;
         this.text = text;
         this.isChecked = isChecked;
         this.isInEditMode = false;
+        this.deleteItemFromList = deleteItemFromList;
         this.createElements();
     }
 
@@ -28,10 +32,15 @@ export class TodoItem {
         this.todoItemContainer.className = styles.classes.todoItem;
     }
 
+    updateTodoItem: Function = () => {
+        serverApi.editTodoItem(this.id, {id: this.id, text: this.text, isChecked: this.isChecked});
+    }
+
 
     onToggleCheckbox: Function = () => {
         this.textElement.className = this.checkbox.checked ? styles.classes.todoItemTextChecked : styles.classes.todoItemText;
-        //UPDATELIST
+        this.isChecked = this.checkbox.checked;
+        this.updateTodoItem();
     }
 
     createCheckbox: Function = () => {
@@ -95,9 +104,10 @@ export class TodoItem {
 
     onEditInputSubmit: Function = () => {
         this.textElement.innerText = this.editInput.value;
+        this.text = this.editInput.value;
         this.editInput.value = "";
         this.hideEditInput();
-        //UPDATELIST
+        this.updateTodoItem();
     }
 
     setEditEvents: Function = () => {
@@ -118,7 +128,8 @@ export class TodoItem {
 
     setDeleteEvents: Function = () => {
         this.deleteIcon.addEventListener('click', () => {
-            //DELETEITEM
+            serverApi.deleteTodoItem(this.id);
+            this.deleteItemFromList(this.todoItemContainer);
         })
     }
 

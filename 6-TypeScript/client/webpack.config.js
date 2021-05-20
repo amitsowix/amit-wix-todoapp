@@ -30,5 +30,13 @@ module.exports = {
       ],
     }),
   ],
+  devServer: {
+    liveReload: true,
+    watchContentBase: true,
+    contentBase: path.join(__dirname, 'src'),
+    proxy: { 
+      '/api': 'http://localhost:3000'
+    },
+  },
   devtool: "source-map",
 };
