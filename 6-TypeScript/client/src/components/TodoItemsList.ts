@@ -9,7 +9,6 @@ export class TodoItemsList {
     addNewItemInput: HTMLInputElement;
     submitAddNewItemButton: HTMLElement;
     isAddNewItemInputShowing: Boolean = false;
-    todoList: TodoList = {};
 
     constructor(elements: ElementsObject) {
         this.todoListContainerElement = elements.todoListContainerElement;

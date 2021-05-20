@@ -11,12 +11,14 @@ const app: Application = express();
 app.use(cookieParser())
 app.use(express.static(path.resolve(__dirname, '../client/dist')));
 
-const client: redis.RedisClient = redis.createClient();
+
+const client: redis.RedisClient = redis.createClient(process.env.REDIS_URL || "");
 
 app.use(express.json());
 
 
 let currentUserId: string;
+
 
 
 interface TodoItem {
