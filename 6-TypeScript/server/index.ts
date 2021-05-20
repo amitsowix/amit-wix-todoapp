@@ -94,5 +94,4 @@ app.post('/api/editTodoItem/:itemId', (req: Request, res: Response) => {
 
 const PORT: Number = 3000;
 app.listen(process.env.PORT || PORT, () => {
-    console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`);
 })
