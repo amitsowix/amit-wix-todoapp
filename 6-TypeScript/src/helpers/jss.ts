@@ -1,14 +1,14 @@
 import {create, Jss, StyleSheet} from 'jss'
 import camelCase from 'jss-plugin-camel-case';
 import global from 'jss-plugin-global'
-import { ElementsObject } from './interfaces';
+import { ElementsObject } from '../../../common/interfaces';
 
 
 const jss: Jss = create();
 jss.use(camelCase(), global());
 
 
-export const setStyles: Function = (elements: ElementsObject) => {
+export const setStyles = (elements: ElementsObject) : void => {
     elements.appHeader.className = styles.classes.appHeader;
     elements.appFooter.className = styles.classes.appFooter;
     elements.addIcon.className = styles.classes.addIcon;

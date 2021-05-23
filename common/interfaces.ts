@@ -13,7 +13,7 @@ export interface ElementsObject {
     submitAddNewItem: HTMLElement;
 }
 
-export interface ServerTodoItem {
+export interface TodoItemDTO {
     id: string,
     text: string,
     isChecked: Boolean,
@@ -36,4 +36,8 @@ export interface TodoItem {
 
 export interface TodoList {
     [key: string] : TodoItem
+}
+
+export interface TodoListDTO {
+    [key: string] : TodoItemDTO
 }
