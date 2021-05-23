@@ -17,12 +17,13 @@
     "path": "^0.12.7",
     "redis": "^3.1.2",
     "ts-node": "^9.1.1",
-    "uuid": "^8.3.2"
-  },
-  "devDependencies": {
+    "uuid": "^8.3.2",    
     "@types/cookie-parser": "^1.4.2",
     "@types/redis": "^2.8.28",
     "@types/uuid": "^8.3.0",
     "typescript": "^4.2.4"
+  },
+  "devDependencies": {
+
   }
 }
