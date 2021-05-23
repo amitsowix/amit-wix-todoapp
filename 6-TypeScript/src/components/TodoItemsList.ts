@@ -1,7 +1,9 @@
-import { ElementsObject, ServerTodoItem, TodoList } from "../helpers/interfaces";
+import { ElementsObject, TodoItemDTO, TodoListDTO } from "../../../common/interfaces";
 import { TodoItem } from "./TodoItem";
 import { v4 as uuidv4 } from "uuid";
 import serverAPI from "../helpers/serverapi";
+
+
 export class TodoItemsList {
 
     todoListContainerElement: HTMLElement;
@@ -17,68 +19,66 @@ export class TodoItemsList {
         this.submitAddNewItemButton = elements.submitAddNewItem;
     }
 
-    init: Function = async () => {
-        this.setAddNewItemEvents();
-        await this.createListFromServer();
+    init = async (): Promise<boolean> => {
+        return new Promise(async (resolve) => {
+            this.setAddNewItemEvents();
+            await this.createListFromServer();
+            resolve(true);
+        })
     }
 
-    createListFromServer: Function = async () => {
-        const todoItems: TodoList = await serverAPI.getTodoItemsList();
-        for (const [id, item] of Object.entries(todoItems)){
-            this.onAddNewItemSubmit(item);
-        }
+    createListFromServer = async (): Promise<boolean> => {
+        return new Promise(async (resolve) => {
+            const todoItems: TodoListDTO = await serverAPI.getTodoItemsList();
+            for (const [id, item] of Object.entries(todoItems)){
+                this.onAddNewItemSubmit(item);
+            }
+            resolve(true);
+        })
     }
 
-    hideAddNewItemInput: Function = () => {
+    hideAddNewItemInput = (): void => {
         this.addNewItemInput.style.display = 'none';
         this.submitAddNewItemButton.style.display = 'none';
         this.isAddNewItemInputShowing = false;
     }
 
-    showAddNewItemInput: Function = () => {
+    showAddNewItemInput = (): void => {
         this.addNewItemInput.style.display = 'block';
         this.submitAddNewItemButton.style.display = 'block';
         this.isAddNewItemInputShowing = true;
         this.addNewItemInput.focus();
     }
 
-    onAddNewItemClick: Function = () => {
+    onAddNewItemClick = (): void => {
         this.isAddNewItemInputShowing ? this.hideAddNewItemInput() : this.showAddNewItemInput();
     }
 
-    deleteItemFromList: Function = (todoItem: HTMLElement) => {
+    deleteItemFromList = (todoItem: HTMLElement): void => {
         this.todoListContainerElement.removeChild(todoItem);
     }
 
-    onAddNewItemSubmit: Function = (itemFromServer: ServerTodoItem) => {
-        let id, isChecked, text;
-        if (itemFromServer){
-            id = itemFromServer.id;
-            text = itemFromServer.text;
-            isChecked = itemFromServer.isChecked;
-        }
-        else{
-            id = uuidv4();
-            text = this.addNewItemInput.value;
-            isChecked = false;
-        }
+    onAddNewItemSubmit = (itemFromServer: TodoItemDTO): void => {
+        const id = itemFromServer?.id || uuidv4();
+        const text = itemFromServer?.text || this.addNewItemInput.value;
+        const isChecked = itemFromServer?.isChecked || false;
         const todoItem: TodoItem = new TodoItem(id, text, isChecked, this.deleteItemFromList);
         this.todoListContainerElement.insertBefore(todoItem.todoItemContainer, this.todoListContainerElement.firstChild);
         if (!itemFromServer){
-            const newTodoItem: ServerTodoItem = {id, text: this.addNewItemInput.value, isChecked: false};
+            const newTodoItem: TodoItemDTO = {id, text: this.addNewItemInput.value, isChecked: false};
             serverAPI.addTodoItem(newTodoItem);
         }
         this.addNewItemInput.value = "";
     }
 
-    setAddNewItemEvents: Function = () => {
+    setAddNewItemEvents = () : void => {
         this.addNewItemInput.addEventListener('keyup', (event) => {
             if (event.key === "Enter" && this.addNewItemInput.value !== "")
-                this.onAddNewItemSubmit();
+                this.onAddNewItemSubmit(null);
         })
         this.submitAddNewItemButton.addEventListener('click', () => {
             if (this.addNewItemInput.value !== "")
-                this.onAddNewItemSubmit();
+                this.onAddNewItemSubmit(null);
         })
         this.addNewItemButton.addEventListener('click', () => this.onAddNewItemClick());
     }

@@ -15,9 +15,9 @@ export class TodoItem {
     isInEditMode: Boolean;
     editInput: HTMLInputElement;
     submitButton: HTMLElement;
-    deleteItemFromList: Function;
+    deleteItemFromList: (todoItem: HTMLElement) => void;
 
-    constructor(id: string, text: string, isChecked: Boolean, deleteItemFromList: Function) {
+    constructor(id: string, text: string, isChecked: Boolean, deleteItemFromList: (todoItem: HTMLElement) => void) {
         this.id = id;
         this.text = text;
         this.isChecked = isChecked;
@@ -26,23 +26,23 @@ export class TodoItem {
         this.createElements();
     }
 
-    createTodoItemContainer: Function = () => {
+    createTodoItemContainer = (): void => {
         this.todoItemContainer = document.createElement('div');
         this.todoItemContainer.className = styles.classes.todoItem;
     }
 
-    updateTodoItem: Function = () => {
+    updateTodoItem = (): void => {
         serverApi.editTodoItem(this.id, {id: this.id, text: this.text, isChecked: this.isChecked});
     }
 
 
-    onToggleCheckbox: Function = () => {
+    onToggleCheckbox = (): void => {
         this.textElement.className = this.checkbox.checked ? styles.classes.todoItemTextChecked : styles.classes.todoItemText;
         this.isChecked = this.checkbox.checked;
         this.updateTodoItem();
     }
 
-    createCheckbox: Function = () => {
+    createCheckbox = (): void => {
         this.checkbox = document.createElement('input');
         this.checkbox.type = 'checkbox';
         this.checkbox.checked = this.isChecked ? true : false;
@@ -50,19 +50,19 @@ export class TodoItem {
         this.checkbox.addEventListener('click', () => this.onToggleCheckbox());
     }
 
-    createTextElement: Function = () => {
+    createTextElement = (): void => {
         this.textElement = document.createElement('div');
         this.textElement.innerText = this.text;
         this.textElement.className = this.checkbox.checked ? styles.classes.todoItemTextChecked : styles.classes.todoItemText;
     }
 
-    createEditIcon: Function = () => {
+    createEditIcon = (): void => {
         this.editIcon = document.createElement('img');
         this.editIcon.className = styles.classes.icon;
         this.editIcon.src = "./edit.png";
     }
 
-    createEditInput: Function = () => {
+    createEditInput = (): void => {
         this.editInput = document.createElement('input');
         this.editInput.className = styles.classes.input;
         this.submitButton = document.createElement('div');
@@ -70,13 +70,13 @@ export class TodoItem {
         this.submitButton.className = styles.classes.submitButton;
     }
 
-    createDeleteIcon: Function = () => {
+    createDeleteIcon = (): void => {
         this.deleteIcon = document.createElement('img');
         this.deleteIcon.className = styles.classes.icon;
         this.deleteIcon.src = "./delete.png";
     }
 
-    createActionsContainer: Function = () => {
+    createActionsContainer = (): void => {
         this.actionsContainer = document.createElement('div');
         this.actionsContainer.className = styles.classes.actionsContainer;
         this.createDeleteIcon();
@@ -88,20 +88,20 @@ export class TodoItem {
         this.actionsContainer.appendChild(this.deleteIcon);
     }
 
-    showEditInput: Function = () => {
+    showEditInput = (): void => {
         this.editInput.style.display = 'block';
         this.submitButton.style.display = 'block';
         this.isInEditMode = true;
         this.editInput.focus();
     }
     
-    hideEditInput: Function = () => {
+    hideEditInput = (): void => {
         this.editInput.style.display = 'none';
         this.submitButton.style.display = 'none';
         this.isInEditMode = false;
     }   
 
-    onEditInputSubmit: Function = () => {
+    onEditInputSubmit = (): void => {
         this.textElement.innerText = this.editInput.value;
         this.text = this.editInput.value;
         this.editInput.value = "";
@@ -109,7 +109,7 @@ export class TodoItem {
         this.updateTodoItem();
     }
 
-    setEditEvents: Function = () => {
+    setEditEvents = (): void => {
         this.editIcon.addEventListener('click', () => {
             this.isInEditMode ? this.hideEditInput() : this.showEditInput();
         })
@@ -125,14 +125,14 @@ export class TodoItem {
         })
     }
 
-    setDeleteEvents: Function = () => {
+    setDeleteEvents = (): void => {
         this.deleteIcon.addEventListener('click', () => {
             serverApi.deleteTodoItem(this.id);
             this.deleteItemFromList(this.todoItemContainer);
         })
     }
 
-    createElements: Function = () => {
+    createElements = (): void => {
         this.createTodoItemContainer();
         this.createCheckbox();
         this.createTextElement();

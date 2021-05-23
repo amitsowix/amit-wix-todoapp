@@ -1,16 +1,16 @@
-import { ElementsObject } from "./interfaces";
+import { ElementsObject } from "../../../common/interfaces";
 
 
-export const getElementByData: Function = (selector: string): HTMLElement | null => {
+export const getElementByData = (selector: string): HTMLElement => {
     return document.querySelector(`[data-hook=${selector}]`);
 }
 
 
-export const getInputElementByData: Function = (selector: string): HTMLInputElement | null => {
+export const getInputElementByData = (selector: string): HTMLInputElement => {
     return document.querySelector(`[data-hook=${selector}]`);
 }
 
-export const getElements: Function = () : ElementsObject => {
+export const getElements = () : ElementsObject => {
     return {
         addNewItemContainerElement: getElementByData("new-item-container"),
         addNewItemButton: getElementByData("new-item-button"),

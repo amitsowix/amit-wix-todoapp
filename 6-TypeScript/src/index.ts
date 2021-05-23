@@ -1,6 +1,6 @@
 import { setStyles } from "./helpers/jss";
 import { getElements } from "./helpers/dom";
-import { ElementsObject } from "./helpers/interfaces";
+import { ElementsObject } from "../../common/interfaces";
 import { TodoItemsList } from "./components/TodoItemsList"
 
 
