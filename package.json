@@ -1,0 +1,33 @@
+{
+  "name": "amit-wix-todoapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./5-Server-ts/index.ts",
+  "dependencies": {
+    "copy-webpack-plugin": "^8.1.1",
+    "html-webpack-plugin": "^5.3.1",
+    "jss": "^10.6.0",
+    "jss-plugin-camel-case": "^10.6.0",
+    "jss-plugin-global": "^10.6.0",
+    "nodemon": "^2.0.7",
+    "path": "^0.12.7",
+    "uuid": "^3.4.0",
+    "webpack": "^5.37.0",
+    "webpack-cli": "^4.7.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "cd ./6-TypeScript && webpack --mode=production",
+    "start": "cd ./5-Server-ts && nodemon index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/amitsowix/amit-wix-todoapp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amitsowix/amit-wix-todoapp/issues"
+  },
+  "homepage": "https://github.com/amitsowix/amit-wix-todoapp#readme"
+}
