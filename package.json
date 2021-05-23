@@ -4,26 +4,26 @@
   "description": "",
   "main": "./5-Server-ts/index.ts",
   "dependencies": {
+    "@types/axios": "^0.14.0",
+    "cookie-parser": "^1.4.5",
     "copy-webpack-plugin": "^8.1.1",
+    "express": "^4.17.1",
     "html-webpack-plugin": "^5.3.1",
     "jss": "^10.6.0",
     "jss-plugin-camel-case": "^10.6.0",
     "jss-plugin-global": "^10.6.0",
     "nodemon": "^2.0.7",
     "path": "^0.12.7",
+    "redis": "^3.1.2",
     "ts-loader": "^9.2.2",
+    "ts-node": "^9.1.1",
     "uuid": "^3.4.0",
     "webpack": "^5.37.0",
-    "webpack-cli": "^4.7.0",
-    "@types/axios": "^0.14.0",
-    "cookie-parser": "^1.4.5",
-    "express": "^4.17.1",
-    "redis": "^3.1.2",
-    "ts-node": "^9.1.1"
+    "webpack-cli": "^4.7.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cd ./6-TypeScript && npm install && webpack --mode=production",
+    "build": "cd ./6-TypeScript && npm install && npm run build",
     "start": "cd ./5-Server-ts && nodemon index.ts"
   },
   "repository": {
