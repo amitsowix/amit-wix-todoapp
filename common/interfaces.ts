@@ -41,3 +41,9 @@ export interface TodoList {
 export interface TodoListDTO {
     [key: string] : TodoItemDTO
 }
+
+type UUID = string;
+
+export interface AuthJson {
+    currentUserId: UUID;
+}
