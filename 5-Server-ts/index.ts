@@ -10,7 +10,7 @@ require('dotenv').config();
 const app: Application = express();
 
 app.use(cookieParser())
-app.use(express.static(path.resolve(__dirname, '../6-TypeScript/dist')));
+app.use(express.static(path.resolve(__dirname, '../8-react.ts/build')));
 app.use(express.json());
 app.use(authMiddleware);
 
