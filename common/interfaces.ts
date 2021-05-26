@@ -16,7 +16,7 @@ export interface ElementsObject {
 export interface TodoItemDTO {
     id: string,
     text: string,
-    isChecked: Boolean,
+    isChecked: boolean,
 }
 
 export interface TodoItem {
@@ -42,7 +42,7 @@ export interface TodoListDTO {
     [key: string] : TodoItemDTO
 }
 
-type UUID = string;
+export type UUID = string;
 
 export interface AuthJson {
     currentUserId: UUID;
