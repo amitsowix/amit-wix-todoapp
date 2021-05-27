@@ -1,4 +1,4 @@
-import {FC} from 'react';
+import React, {FC} from 'react';
 import {createUseStyles} from 'react-jss'
 import {Classes} from 'jss';
 import addIcon from "../assets/add.png";
@@ -22,7 +22,7 @@ const useStyles: () => Classes = createUseStyles({
         alignItems: "center",
         background: 'orangered',
         display: "flex",
-        width: "108px",
+        width: "140px",
         padding: "15px",
         justifyContent: "space-between",
         borderRadius: "5px",

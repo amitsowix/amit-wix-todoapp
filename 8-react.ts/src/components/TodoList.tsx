@@ -1,4 +1,4 @@
-import {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {createUseStyles} from 'react-jss'
 import {Classes} from 'jss';
 import Button from './Button';
@@ -85,7 +85,6 @@ const useStyles : () => Classes = createUseStyles({
         cursor: "pointer"
     },
     listContainer: { 
-        overflow: "scroll", 
         height: "400px" 
     }
 });
