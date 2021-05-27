@@ -15,6 +15,7 @@ export class ServerAPI {
         }
         catch(error) {
             handleError(error);
+            return {};
         }
     }
 
@@ -27,6 +28,7 @@ export class ServerAPI {
         }
         catch(error) {
             handleError(error);
+            throw new Error();
         }
     }
 
