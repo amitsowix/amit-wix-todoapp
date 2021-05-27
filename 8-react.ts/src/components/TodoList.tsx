@@ -1,4 +1,4 @@
-import {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {createUseStyles} from 'react-jss'
 import {Classes} from 'jss';
 import Button from './Button';
@@ -11,41 +11,77 @@ import { v4 as uuidv4 } from 'uuid';
 
 const TodoList: FC = (): JSX.Element => {
 
-    const [todoListDTO, setTodoListDTO] = useState<TodoListDTO>({});
+    const [todoList, setTodoList] = useState<TodoListDTO>({});
     const [isInEditMode, setEditMode] = useState<boolean>(false);
+    const [showError, setShowError] = useState<boolean>(false);
 
     const classes: Classes = useStyles();
 
     const getTodoList: () => void = async () => {
-        const todoList: TodoListDTO | undefined = await ServerAPI.getTodoItemsList();
-        setTodoListDTO(todoList || {});
+        try {
+            const todoList: TodoListDTO = await ServerAPI.getTodoItemsList();
+            setTodoList(todoList);
+            setShowError(false);
+        }
+        catch (e){
+            setShowError(true);
+        }
     }
 
-    const addNewItem = (text: string): void => {
+    const addNewItem = async (text: string) => {
         const id = uuidv4();
         const newItem: TodoItemDTO = {
             text,
             id,
             isChecked: false
         }
-        const newList = {...todoListDTO};
+        const newList = {...todoList};
         newList[id] = newItem;
-        setTodoListDTO(newList);
-        ServerAPI.addTodoItem(newItem);
+        setTodoList(newList);
+        try {
+            await ServerAPI.addTodoItem(newItem);
+            setShowError(false);
+        }
+        catch (e) {
+            setShowError(true);
+            const oldList = {...newList};
+            delete oldList[id];
+            setTodoList(oldList);
+        }
     }
 
-    const editTodoItem = (updatedItem: TodoItemDTO): void => {
-        const newList = {...todoListDTO};
+    const editTodoItem =  async (updatedItem: TodoItemDTO) => {
+        const oldItem = todoList[updatedItem.id]
+        const newList = {...todoList};
         newList[updatedItem.id] = updatedItem;
-        setTodoListDTO(newList);
-        ServerAPI.editTodoItem(updatedItem.id, updatedItem);
+        setTodoList(newList);
+        try {
+            await ServerAPI.editTodoItem(updatedItem.id, updatedItem);
+            setShowError(false);
+        }
+        catch (e){
+            setShowError(true);
+            const oldList = {...newList};
+            oldList[updatedItem.id] = oldItem
+            setTodoList(oldList);
+        }
     }
 
-    const deleteTodoItem = (id: string): void => {
-        const newList = {...todoListDTO};
+    const deleteTodoItem = async (id: string) => {
+        const newList = {...todoList};
+        const deletedItem = newList[id];
         delete newList[id];
-        setTodoListDTO(newList);
-        ServerAPI.deleteTodoItem(id);
+        setTodoList(newList);
+        try {
+            await ServerAPI.deleteTodoItem(id);
+            setShowError(false);
+        }
+        catch (e){
+            setShowError(true);
+            const oldList = {...newList};
+            oldList[id] = deletedItem;
+            setTodoList(oldList);
+        }
     }
     
     useEffect(getTodoList, []);
@@ -56,8 +92,9 @@ const TodoList: FC = (): JSX.Element => {
                 <Button onClick={()=>setEditMode(!isInEditMode)}/>
                 {isInEditMode ? <Input onInputSubmit={addNewItem} /> : null}
             </div>
+            {showError ? <div className={classes.error}>Error Connecting to DB</div> : null}
             <ul className={classes.listContainer}>
-                {Object.values(todoListDTO).map((item: TodoItemDTO) : JSX.Element => {
+                {Object.values(todoList).map((item: TodoItemDTO) : JSX.Element => {
                     return <TodoItem 
                         key={item.id} id={item.id} 
                         text={item.text} 
@@ -85,8 +122,10 @@ const useStyles : () => Classes = createUseStyles({
         cursor: "pointer"
     },
     listContainer: { 
-        overflow: "scroll", 
         height: "400px" 
+    },
+    error: {
+        color: 'red',
     }
 });
 

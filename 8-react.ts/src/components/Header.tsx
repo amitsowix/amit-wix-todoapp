@@ -1,12 +1,12 @@
-import {FC} from 'react';
+import React, {FC} from 'react';
 import {createUseStyles} from 'react-jss'
 import {Classes} from 'jss';
 
-const Header: FC = () => {
+const Header: FC = (): JSX.Element => {
     const classes = useStyles();
     return (
         <div className = {classes.appHeader}>
-            {'Welcome to the most AMAZING\n(written in React.ts) Todo App EVERRRRR!'}
+            {'Welcome to the most AMAZING (written in React.ts) Todo App EVERRRRR!'}
         </div>
     )            
 }

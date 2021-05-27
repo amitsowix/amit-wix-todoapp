@@ -1,4 +1,4 @@
-import { FC } from "react";
+import React, { FC } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import TodoList from "./components/TodoList";
@@ -7,7 +7,7 @@ import {Classes} from 'jss';
 import {createUseStyles} from 'react-jss'
 
 
-const App: FC = () => {
+const App: FC = (): JSX.Element => {
   const classes: Classes = useStyles();
   return (
     <div className={classes.appContainer}>

@@ -1,20 +1,15 @@
 import redis, {RedisClient} from 'redis';
-import { addEmitHelpers, Type } from 'typescript';
 import {TodoListDTO} from "../common/interfaces";
 
 const client: RedisClient = redis.createClient(process.env.REDIS_URL || "");
 
-const promisify = <Type> (f: (callback: (err: Error | null, result: Type | null) => void) => void) : () => Promise<Type>  => {
+type Callback<Type> = (result: Type, err: Error | null) => void;
+type PromisableFunction<Type> = (callback: Callback<Type>) => void;
+
+const promisify = <Type> (f: PromisableFunction<Type>) : () => Promise<Type>  => {
     return () => {
         return new Promise(async (resolve, reject) => {
-            const callback = (err: Error | null, result: Type | null) => {
-                if (err){
-                    reject(err);
-                }
-                else if (result){
-                    resolve(result);
-                }
-            }
+            const callback = (result: Type, err: Error | null) => err ? reject(err) : resolve(result);
             f.call(this, callback);
         })
     }
@@ -23,28 +18,28 @@ const promisify = <Type> (f: (callback: (err: Error | null, result: Type | null)
 export class TodoDao {
 
     getTodos = (userId: string) => {
-        return promisify<TodoListDTO>((callback: (err: Error | null, result: TodoListDTO | null) => void) : void => {
+        return promisify<TodoListDTO>((callback: Callback<TodoListDTO>) : void => {
             client.get(userId, (err: Error | null, data: string | null) => {
+                const response: TodoListDTO = JSON.parse(data || "{}");
                 if (err) {
                     console.log(err);
-                    callback(err, null);
+                    callback(response, err);
                 }
-                const response: TodoListDTO = JSON.parse(data || "{}");
-                callback(null, response);
+                callback(response, null);
             });
         })();
     }
     
     setTodoItem = (userId: string, data: TodoListDTO) => {
         const stringifiedData: string = JSON.stringify(data);
-        return promisify<boolean>((callback: (err: Error | null, result: boolean | null) => void) : void => {
+        return promisify<boolean>((callback: Callback<boolean>) : void => {
             try {
                 client.set(userId, stringifiedData);
-                callback(null, true);
+                callback(true, null);
             }
             catch (err){
                 console.log(err);
-                callback(err, null);
+                callback(false, err);
             }
         })();
     }
