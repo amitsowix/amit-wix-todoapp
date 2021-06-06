@@ -90,7 +90,7 @@ const TodoList: FC = (): JSX.Element => {
         <div className = {classes.appBodyContainer}>
             <div className={classes.newItemContainer}>
                 <Button onClick={()=>setEditMode(!isInEditMode)}/>
-                {isInEditMode ? <Input onInputSubmit={addNewItem} /> : null}
+                {isInEditMode ? <Input name={'add-new-item'} onInputSubmit={addNewItem} /> : null}
             </div>
             {showError ? <div className={classes.error}>Error Connecting to DB</div> : null}
             <ul className={classes.listContainer}>

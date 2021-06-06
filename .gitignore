@@ -1,3 +1,8 @@
 node_modules
 dist
 redis-stable
+build
+__snapshots__
+test
+dump.rdb
+./dump.rdb 
