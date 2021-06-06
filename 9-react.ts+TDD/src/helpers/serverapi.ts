@@ -2,7 +2,7 @@ import axios, {AxiosResponse} from "axios";
 import {TodoItemDTO, TodoListDTO} from "../../../common/interfaces"
 
 const handleError = (error: Error) => {
-    console.log(error);
+    //console.log(error);
     throw error;
 }
 
