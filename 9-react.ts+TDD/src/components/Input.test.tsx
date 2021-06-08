@@ -2,74 +2,109 @@ import React from 'react';
 import renderer, {ReactTestRenderer, ReactTestRendererJSON} from 'react-test-renderer';
 import {screen, render} from '@testing-library/react';
 import Input from './Input';
-import {mount} from 'enzyme';
+import {mount, ReactWrapper} from 'enzyme';
 
+const driver = {
+    when: {
+        mount: (callback: () => void): ReactTestRenderer => {
+            const component: ReactTestRenderer = renderer.create(<Input name={""} onInputSubmit={callback}/>);
+            return component;
+        },
+        render: (callback: () => void): void => {
+            render(<Input name={""} onInputSubmit={callback}/>);
+        },
+        enzymeMount: (callback: () => void): ReactWrapper => {
+            const wrapper = mount(<Input name={'test'} onInputSubmit={callback} />);
+            return wrapper;
+        },
+        click: (element: ReactWrapper): void => {
+            element.simulate('click');
+        },
+        focus: (element: ReactWrapper): void => {
+            element.simulate('focus');
+        },
+        change: (element: ReactWrapper): void => {
+            element.simulate('change', { target: { value: 'Changed' } })
+        },
+        enterPress: (element: ReactWrapper): void => {
+            element.simulate('keyDown', { key: 'Enter' })
+        },
+    },
+    get: {
+      title: () => screen.getByText('GO'),
+      submitButton: (wrapper: ReactWrapper) => wrapper.find('div[data-hook="submit-button"]'),
+      input: (wrapper: ReactWrapper) => wrapper.find('input[name="test"]')
+    }
+}
 
-describe('Test Render', () => {
-    test('Component Rendered Correctly', () => {
-        const component: ReactTestRenderer = renderer.create(
-            <Input name={'test'} onInputSubmit={()=>{}}/>
-        )
+describe('Input render', () => {
+
+    it('should render the component correctly', () => {
+
+        const component: ReactTestRenderer = driver.when.mount(()=>{});
+
         let tree: ReactTestRendererJSON | ReactTestRendererJSON[] | null = component.toJSON();
         expect(tree).toMatchSnapshot();
     })
 
-    test('Container type', () => {
-        const component: ReactTestRenderer = renderer.create(
-            <Input name={'test'} onInputSubmit={()=>{}}/>
-        );
+    it('should be of type div', () => {
+        
+        const component: ReactTestRenderer = driver.when.mount(()=>{});
+
         let tree: ReactTestRendererJSON | ReactTestRendererJSON[] | null = component.toJSON();
         if (tree && !Array.isArray(tree)){
             expect(tree.type).toMatch('div');
         }
     })
 
-    test('Submit Button text', () => {
-        render(<Input name={'test'} onInputSubmit={()=>{}}/>);
-        expect(screen.getByText('GO')).toBeInTheDocument();
-    })
+    it('should render the text', () => {
 
-    test('Component class', () => {
-        const component: ReactTestRenderer = renderer.create(
-            <Input name={'test'} onInputSubmit={()=>{}}/>
-        );
-        let tree: ReactTestRendererJSON | ReactTestRendererJSON[] | null = component.toJSON();
-        if (tree && !Array.isArray(tree)){
-            expect(tree.props.className).toMatch('inputContainer-0-2-3');
-        }
+        driver.when.render(()=>{});
+
+        expect(driver.get.title()).toBeInTheDocument();
     })
 })
 
 
-describe('Submit functionality test', () => {
-    test('Submit Button click with value', () => {
+describe('Input submit functionality test', () => {
+    it('should call the callback on submit', () => {
+
         const mockCallBack = jest.fn();
-        const wrapper = mount(<Input name={'test'} onInputSubmit={mockCallBack} />);
-        const submitButton = wrapper.find('.submitButton-0-2-2');
-        const input = wrapper.find('.input-0-2-1');
-        input.simulate('focus');
-        input.simulate('change', { target: { value: 'Changed' } });
-        submitButton.simulate('click');
+        const wrapper: ReactWrapper = driver.when.enzymeMount(mockCallBack);
+
+        const submitButton: ReactWrapper = driver.get.submitButton(wrapper);
+        const input: ReactWrapper = driver.get.input(wrapper);
+
+        driver.when.focus(input);
+        driver.when.change(input);
+        driver.when.click(submitButton);
+
         expect(mockCallBack.mock.calls.length).toEqual(1);
     });
 
-    test('Submit Button click without value', () => {
+    it('shouldn\'t call the callback without input', () => {
+
         const mockCallBack = jest.fn();
-        const wrapper = mount(<Input name={'test'} onInputSubmit={mockCallBack} />);
-        const submitButton = wrapper.find('.submitButton-0-2-2');
-        const input = wrapper.find('.input-0-2-1');
-        submitButton.simulate('click');
+        const wrapper = driver.when.enzymeMount(mockCallBack);
+
+        const submitButton = driver.get.submitButton(wrapper);
+        driver.when.click(submitButton);
+
         expect(mockCallBack.mock.calls.length).toEqual(0);
     });
 
 
-    test('Submit via enter click', () => {
+    it('should call the callback on enter click', () => {
+
         const mockCallBack = jest.fn();
-        const wrapper = mount(<Input name={'test'} onInputSubmit={mockCallBack} />);
-        const input = wrapper.find('.input-0-2-1');
-        input.simulate('focus');
-        input.simulate('change', { target: { value: 'Changed' } });
-        input.simulate('keyDown', {key: 'Enter'})
+        const wrapper = driver.when.enzymeMount(mockCallBack);
+
+        const input = driver.get.input(wrapper);
+
+        driver.when.focus(input);
+        driver.when.change(input);
+        driver.when.enterPress(input);
+
         expect(mockCallBack.mock.calls.length).toEqual(1);
     })
 })

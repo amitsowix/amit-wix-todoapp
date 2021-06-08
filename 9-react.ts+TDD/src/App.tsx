@@ -10,7 +10,7 @@ import {createUseStyles} from 'react-jss'
 const App: FC = (): JSX.Element => {
   const classes: Classes = useStyles();
   return (
-    <div className={classes.appContainer}>
+    <div data-hook={'app-container'} className={classes.appContainer}>
       <Header/>
       <TodoList/>
       <Footer/>  

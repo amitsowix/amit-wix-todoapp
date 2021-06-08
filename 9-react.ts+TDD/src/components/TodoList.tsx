@@ -93,7 +93,7 @@ const TodoList: FC = (): JSX.Element => {
                 {isInEditMode ? <Input name={'add-new-item'} onInputSubmit={addNewItem} /> : null}
             </div>
             {showError ? <div className={classes.error}>Error Connecting to DB</div> : null}
-            <ul className={classes.listContainer}>
+            <ul data-hook={'list-container'} className={classes.listContainer}>
                 {Object.values(todoList).map((item: TodoItemDTO) : JSX.Element => {
                     return <TodoItem 
                         key={item.id} id={item.id} 

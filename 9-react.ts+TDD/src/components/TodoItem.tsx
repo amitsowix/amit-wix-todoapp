@@ -41,7 +41,7 @@ const TodoItem: FC<TodoItemProps> = (props) : JSX.Element => {
                 setEditMode(false);
                 props.editTodoItem({id: props.id, text: newValue, isChecked});
             }}/> : null}
-            <img id={'delete-icon-' + props.id} src={deleteIcon} className={classes.icon} onClick={()=>{props.deleteTodoItem(props.id)}}/>
+            <img data-hook={'delete-icon'} id={'delete-icon-' + props.id} src={deleteIcon} className={classes.icon} onClick={()=>{props.deleteTodoItem(props.id)}}/>
         </div>
     )            
 }
