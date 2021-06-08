@@ -10,7 +10,7 @@ interface ButtonProps {
 const Button: FC<ButtonProps> = (props) : JSX.Element => {
     const classes = useStyles();
     return (
-        <div className={classes.newItemButton} onClick={props.onClick}>
+        <div data-hook={'new-item-button'} className={classes.newItemButton} onClick={props.onClick}>
             <img alt="" src={addIcon} className={classes.addIcon}/>
             <div>New Item</div>
         </div>

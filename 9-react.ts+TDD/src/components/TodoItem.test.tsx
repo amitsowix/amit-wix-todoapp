@@ -2,87 +2,113 @@ import React from 'react';
 import renderer, {ReactTestRenderer, ReactTestRendererJSON} from 'react-test-renderer';
 import {screen, render} from '@testing-library/react';
 import TodoItem from './TodoItem';
-import {mount} from 'enzyme';
+import {mount, ReactWrapper} from 'enzyme';
 
+
+const driver = {
+    when: {
+        mount: (editCallback: () => void = () => {}, deleteCallback: () => void = () => {}, isChecked: boolean = false): ReactTestRenderer => {
+            const component: ReactTestRenderer = renderer.create(
+                <TodoItem id={'mock'} text={'mock'} isChecked={isChecked} editTodoItem={editCallback} deleteTodoItem={deleteCallback}/>
+            )            
+            return component;
+        },
+        render: (editCallback: () => void = () => {}, deleteCallback: () => void = () => {}, isChecked: boolean = false): void => {
+            render(
+                <TodoItem id={'mock'} text={'mock'} isChecked={isChecked} editTodoItem={editCallback} deleteTodoItem={deleteCallback}/>             
+            );
+        },
+        enzymeMount: (editCallback: () => void = () => {}, deleteCallback: () => void = () => {}, isChecked: boolean = false): ReactWrapper => {
+            const wrapper = mount(<TodoItem id={'mock'} text={'mock'} isChecked={isChecked} editTodoItem={editCallback} deleteTodoItem={deleteCallback}/>);
+            return wrapper;
+        },
+        click: (element: ReactWrapper): void => {
+            element.simulate('click');
+        },
+    },
+    get: {
+      todoText: () => screen.getByText('mock'),
+      submitButton: (wrapper: ReactWrapper) => wrapper.find('div[data-hook="submit-button"]'),
+      input: (wrapper: ReactWrapper) => wrapper.find('input[name="edit-input"]'),
+      checkbox: (wrapper: ReactWrapper) => wrapper.find('input').at(0),
+      editIcon: (wrapper: ReactWrapper) => wrapper.find('img').at(0),
+      deleteIcon: (wrapper: ReactWrapper) => wrapper.find('img').at(1)
+    }
+}
 
 describe('Test Render', () => {
-    test('Component Rendered Correctly', () => {
-        const component: ReactTestRenderer = renderer.create(
-            <TodoItem id={'mock'} text={'mock'} isChecked={false} editTodoItem={()=>{}} deleteTodoItem={()=>{}}/>
-        )
+    it('should render properly', () => {
+
+        const component = driver.when.mount();
+
         let tree: ReactTestRendererJSON | ReactTestRendererJSON[] | null = component.toJSON();
         expect(tree).toMatchSnapshot();
     })
 
-    test('Container type', () => {
-        const component: ReactTestRenderer = renderer.create(
-            <TodoItem id={'mock'} text={'mock'} isChecked={false} editTodoItem={()=>{}} deleteTodoItem={()=>{}}/>
-        );
+    it('should be of type div', () => {
+
+        const component: ReactTestRenderer = driver.when.mount();
+
         let tree: ReactTestRendererJSON | ReactTestRendererJSON[] | null = component.toJSON();
         if (tree && !Array.isArray(tree)){
             expect(tree.type).toMatch('div');
         }
     })
 
-    test('TodoItem text', () => {
-        render(<TodoItem id={'mock'} text={'mock'} isChecked={false} editTodoItem={()=>{}} deleteTodoItem={()=>{}}/>);
-        expect(screen.getByText('mock')).toBeInTheDocument();
+    it('should render todoitem text', () => {
+
+        driver.when.render();
+
+        expect(driver.get.todoText()).toBeInTheDocument();
     })
     
-    test('TodoItem checkbox = false', () => {
-        const wrapper = mount(<TodoItem id={'mock'} text={'mock'} isChecked={false} editTodoItem={()=>{}} deleteTodoItem={()=>{}}/>);
-        const checkbox = wrapper.find('input').at(0);
+    it('should mark the checkbox as unchecked', () => {
+
+        const wrapper: ReactWrapper = driver.when.enzymeMount(undefined, undefined, false);
+
+        const checkbox = driver.get.checkbox(wrapper);
+
         expect(checkbox.props().checked).toEqual(false);
-        const text = wrapper.find('div').at(1);
-        expect(text.props().className).toEqual('todoItemText-0-2-3');
     })
 
-    test('TodoItem checkbox = true', () => {
-        const wrapper = mount(<TodoItem id={'mock'} text={'mock'} isChecked={true} editTodoItem={()=>{}} deleteTodoItem={()=>{}}/>);
-        const checkbox = wrapper.find('input').at(0);
+    it('should mark the checkbox as checeked', () => {
+
+        const wrapper: ReactWrapper = driver.when.enzymeMount(undefined, undefined, true);
+
+        const checkbox = driver.get.checkbox(wrapper);
+
         expect(checkbox.props().checked).toEqual(true);
-        const text = wrapper.find('div').at(1);
-        expect(text.props().className).toEqual('todoItemTextChecked-0-2-4');
     })
 
-    test('Component class', () => {
-        const component: ReactTestRenderer = renderer.create(
-            <TodoItem id={'mock'} text={'mock'} isChecked={false} editTodoItem={()=>{}} deleteTodoItem={()=>{}}/>
-        );
-        let tree: ReactTestRendererJSON | ReactTestRendererJSON[] | null = component.toJSON();
-        if (tree && !Array.isArray(tree)){
-            expect(tree.props.className).toMatch('todoItem-0-2-2');
-        }
-    })
+    it('input shoudn\'t show', () => {
 
-    test('Input not showing', () => {
-        const wrapper = mount(<TodoItem id={'mock'} text={'mock'} isChecked={true} editTodoItem={()=>{}} deleteTodoItem={()=>{}}/>);
-        expect(wrapper.find('.input-0-1-7').exists()).toBeFalsy();
-        expect(wrapper.find('.submitButton-0-1-8').exists()).toBeFalsy();
+        const wrapper: ReactWrapper = driver.when.enzymeMount();
+
+        expect(driver.get.input(wrapper).exists()).toBeFalsy();
+        expect(driver.get.submitButton(wrapper).exists()).toBeFalsy();
     })
 })
 
 
 describe('Input show/hide', () => {
-    test('Show input', () => {
-        const wrapper = mount(<TodoItem id={'mock'} text={'mock'} isChecked={true} editTodoItem={()=>{}} deleteTodoItem={()=>{}}/>);
-        const editIcon = wrapper.find('img').at(0);
-        editIcon.simulate('click');
-        const input = wrapper.find('input').at(1);
-        const submitButton = wrapper.find('div').at(2);
+    it('should show/hide input on click', () => {
+
+        const wrapper: ReactWrapper = driver.when.enzymeMount();
+
+        const editIcon: ReactWrapper = driver.get.editIcon(wrapper);
+
+        driver.when.click(editIcon);
+
+        const input = driver.get.input(wrapper);
+        const submitButton = driver.get.submitButton(wrapper);
+
         expect(input.exists()).toBeTruthy();
         expect(submitButton.exists()).toBeTruthy();
-        editIcon.simulate('click');
+
+        driver.when.click(editIcon);
+
         expect(input).not.toBeInTheDocument;
         expect(submitButton).not.toBeInTheDocument;
-    })
-
-    test('Hide input', () => {
-        const wrapper = mount(<TodoItem id={'mock'} text={'mock'} isChecked={true} editTodoItem={()=>{}} deleteTodoItem={()=>{}}/>);
-        const editIcon = wrapper.find('img').at(0);
-        editIcon.simulate('click');
-        expect(wrapper.find('input').at(1).exists()).toBeTruthy();
-        expect(wrapper.find('div').at(2).exists()).toBeTruthy();
     })
 })
 
@@ -90,11 +116,14 @@ describe('Input show/hide', () => {
 
 describe('Todo item actions', () => {
 
-    test('Delete item', () => {
+    it('should delete the item', () => {
+
         const mockCallBack = jest.fn();
-        const wrapper = mount(<TodoItem id={'mock'} text={'mock'} isChecked={true} editTodoItem={()=>{}} deleteTodoItem={mockCallBack}/>);
-        const deleteIcon = wrapper.find('img').at(1);
-        deleteIcon.simulate('click');
+        const wrapper: ReactWrapper = driver.when.enzymeMount(undefined, mockCallBack);
+
+        const deleteIcon = driver.get.deleteIcon(wrapper);
+        driver.when.click(deleteIcon);
+
         expect(mockCallBack.mock.calls.length).toEqual(1);
     });
 })
