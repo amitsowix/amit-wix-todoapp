@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Header should render component 1`] = `
+<div
+  className="appHeader-0-2-1"
+>
+  Welcome to the most AMAZING (written in React.ts) Todo App EVERRRRR!
+</div>
+`;

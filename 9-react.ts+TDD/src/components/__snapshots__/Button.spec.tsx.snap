@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Button Render should render correctly 1`] = `
+<div
+  className="newItemButton-0-2-1"
+  data-hook="new-item-button"
+  onClick={[Function]}
+>
+  <img
+    alt=""
+    className="addIcon-0-2-2"
+    src="test-file-stub"
+  />
+  <div>
+    New Item
+  </div>
+</div>
+`;

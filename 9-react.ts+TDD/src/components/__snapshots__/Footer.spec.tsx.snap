@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Footer should render properly 1`] = `
+<div
+  className="appFooter-0-2-1"
+>
+  Created by Amit for Wix.com. All rights reserved ©
+</div>
+`;

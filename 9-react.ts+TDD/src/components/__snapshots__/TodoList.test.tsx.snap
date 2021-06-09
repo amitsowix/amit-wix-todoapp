@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test Render should render correctly 1`] = `
+<div
+  className="appBodyContainer-0-2-1"
+>
+  <div
+    className="newItemContainer-0-2-2"
+  >
+    <div
+      className="newItemButton-0-2-6"
+      data-hook="new-item-button"
+      onClick={[Function]}
+    >
+      <img
+        alt=""
+        className="addIcon-0-2-7"
+        src="test-file-stub"
+      />
+      <div>
+        New Item
+      </div>
+    </div>
+  </div>
+  <ul
+    className="listContainer-0-2-4"
+    data-hook="list-container"
+  />
+</div>
+`;
