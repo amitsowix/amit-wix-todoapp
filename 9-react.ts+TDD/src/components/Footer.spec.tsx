@@ -3,6 +3,30 @@ import renderer, {ReactTestRenderer, ReactTestRendererJSON} from 'react-test-ren
 import {render, screen} from '@testing-library/react';
 import Footer from './Footer';
 
+
+
+describe('Footer', () => {
+    it('should render properly', () => {
+        const component = driver.when.mount();
+
+        const tree: ReactTestRendererJSON = component.toJSON() as ReactTestRendererJSON;
+        expect(tree).toMatchSnapshot();
+    })
+
+    it('should render the correct text', () => {
+        driver.when.render();
+        
+        expect(driver.get.title()).toBeInTheDocument();
+    })
+
+    it('should be a div', () => {
+        driver.when.render();
+
+        expect(driver.get.title()).toBeInstanceOf(HTMLDivElement);
+    })
+})
+
+
 const driver = {
     when: {
         mount: (): ReactTestRenderer => {
@@ -17,27 +41,3 @@ const driver = {
       title: () => screen.getByText('Created by Amit for Wix.com. All rights reserved ©')
     }
 }
-
-describe('Footer', () => {
-    it('should render properly', () => {
-
-        const component = driver.when.mount();
-
-        let tree: ReactTestRendererJSON | ReactTestRendererJSON[] | null = component.toJSON();
-        expect(tree).toMatchSnapshot();
-    })
-
-    it('should render the correct text', () => {
-
-        driver.when.render();
-        
-        expect(driver.get.title()).toBeInTheDocument();
-    })
-
-    it('should be a div', () => {
-
-        driver.when.render();
-
-        expect(driver.get.title()).toBeInstanceOf(HTMLDivElement);
-    })
-})

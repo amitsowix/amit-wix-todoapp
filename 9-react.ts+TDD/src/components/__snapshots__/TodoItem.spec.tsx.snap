@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test Render should render properly 1`] = `
+<div
+  className="todoItem-0-2-2"
+  data-hook="todo-item"
+>
+  <input
+    checked={false}
+    className="checkbox-0-2-5"
+    name="checkbox-mock"
+    onChange={[Function]}
+    type="checkbox"
+  />
+  <div
+    className="todoItemText-0-2-3"
+    data-hook="todo-text"
+  >
+    mock
+  </div>
+  <img
+    className="icon-0-2-1"
+    data-hook="edit-icon"
+    id="edit-icon-mock"
+    onClick={[Function]}
+    src="test-file-stub"
+  />
+  <img
+    className="icon-0-2-1"
+    data-hook="delete-icon"
+    id="delete-icon-mock"
+    onClick={[Function]}
+    src="test-file-stub"
+  />
+</div>
+`;

@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Input render should render the component correctly 1`] = `
+<div
+  className="inputContainer-0-2-3"
+>
+  <input
+    autoFocus={true}
+    className="input-0-2-1"
+    name=""
+    onChange={[Function]}
+    onKeyDown={[Function]}
+    onSubmit={[Function]}
+    value=""
+  />
+  <div
+    className="submitButton-0-2-2"
+    data-hook="submit-button"
+    onClick={[Function]}
+  >
+    GO
+  </div>
+</div>
+`;
